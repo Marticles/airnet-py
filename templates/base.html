@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="{{ url_for('static', filename='images/airnet.ico') }}"/>
+
+    <title>{% block title %}AirNet{% endblock %}</title>
+
+    {% block css %}　
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <style>
+            body {
+                padding-top: 35px;
+            }
+        </style>
+    {% endblock %}
+
+    {% block js %}
+        <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.zh-CN.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
+    {% endblock %}
+
+    {% block extrajs %} {% endblock %}
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+
+            </button>
+            <a class="navbar-brand" href="/">AirNet丨环境污染物监测平台</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li ><a href="/">总览</a></li>
+                <li><a href="linebarchart">折线/柱状图</a></li>
+                <li><a href="test">test</a></li>
+                <li><a href="pm25">实时排行</a></li>
+                <li><a href="pm25">PM2.5预测</a></li>
+                <li><a href="#">污染物预警</a></li>
+                <li><a href="export">数据导出</a></li>
+                <li><a href="about">关于AirNet</a></li>
+            </ul>
+        </div><!-- /.nav-collapse -->
+    </div><!-- /.container -->
+</nav><!-- /.navbar -->
+
+<div>{% block body %} {% endblock %}</div>
+
+
+</body>
+
+</html>

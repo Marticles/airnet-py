@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block extrajs %}
+    <link rel="stylesheet" href="https://cache.amap.com/lbs/static/main1119.css"/>
+    <script src="https://cache.amap.com/lbs/static/es5.min.js"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.9&key=3adb6c5c66ddc30796733f6dcfe5ff71"></script>
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+
+{% endblock %}
+
+{% block body %}
+
+
+    <script>
+        function getTime() {
+            str = "当前时间：【"
+            var p = document.getElementById("NowTime");
+            time = new Date();
+            year = time.getFullYear();
+            month = time.getMonth() + 1;
+            day = time.getDate();
+            hour = time.getHours();
+            minutes = time.getMinutes();
+            seconds = time.getSeconds();
+            str = str + year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds+"】";
+
+            p.innerText = str;
+
+            setTimeout(getTime, 1000);
+        }
+
+
+        window.onload = function () {
+            getTime();
+        }
+    </script>
+
+    <div class="text-center">
+        <h4 class=" row col-lg-12 ">
+            <span id="NowTime"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>上次数据更新时间：【2018-4-30 23:00】</span>
+        </h4>
+
+    </div>
+
+    <!--选择时间-->
+    <div class="form-group" >
+
+        <div class="input-group date form_datetime col-md-2 col-md-offset-5 " data-date="2016-09-01T12:00:00Z"
+             data-date-format="dd MM yyyy - HH:ii " data-link-field="dtp_input1" style="">
+
+            <input class="form-control" size="1" type="text" value="2018-9-01 12:00:00" readonly>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+
+        </div>
+        <input type="hidden" id="dtp_input1" value=""/>
+
+
+    </div>
+
+    <script>
+        $('.form_datetime').datetimepicker({
+            language: 'zh-CN',
+            weekStart: 1, //一周从哪一天开始
+            todayBtn: 1, //
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+        });
+    </script>
+
+
+
+
+    <div class="checkbox" style="text-align:center">
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> AQI
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> PM2.5
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> PM2.5/24h
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> PM10
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> PM10/24h
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> SO2
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> SO2/24h
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> NO2
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> NO2/24h
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> O3
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> O3/8h
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> O3/24h
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> O3/8h/24h
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> CO
+        </label>
+        <label class="radio-inline">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> CO/24h
+        </label>&nbsp;&nbsp;
+        <button type="button" class="btn btn-success">确认</button>
+    </div>
+
+
+
+
+    <div id="mapcontainer" style="width:1200px; height:800px;margin:0 auto;"></div>
+
+    <script>
+        var map = new AMap.Map('mapcontainer', {
+            resizeEnable: true,
+            zoom: 11,
+            center: [121.47, 31.23]
+        });
+        // 静安
+        var marker_jingan = new AMap.Marker({
+            position: new AMap.LngLat(121.436183, 31.230475),   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+            title: '静安观测站'
+        });
+        // 设置鼠标划过点标记显示的文字提示
+        marker_jingan.setTitle('静安观测站');
+
+        // 设置label标签
+        marker_jingan.setLabel({//label默认蓝框白底左上角显示，样式className为：amap-marker-label
+            offset: new AMap.Pixel(-20, -15),//修改label相对于maker的位置
+            content: "999"
+        });
+
+        // 虹口
+        var marker_hongkou = new AMap.Marker({
+            position: new AMap.LngLat(121.484901, 31.280611),
+            title: '虹口'
+        });
+        marker_hongkou.setTitle('虹口观测站');
+        marker_hongkou.setLabel({
+            offset: new AMap.Pixel(-20, -15),
+            content: "888"
+        });
+
+        // 浦东川沙
+        var marker_pdchuansha = new AMap.Marker({
+            position: new AMap.LngLat(121.713507, 31.194598),
+            title: '浦东川沙'
+        });
+        marker_pdchuansha.setTitle('浦东川沙观测站');
+        marker_pdchuansha.setLabel({
+            offset: new AMap.Pixel(-20, -15),
+            content: "888"
+        });
+
+        // 浦东新区
+        var marker_pdxinqu = new AMap.Marker({
+            position: new AMap.LngLat(121.544779, 31.232901),
+            title: '浦东新区'
+        });
+        marker_pdxinqu.setTitle('浦东新区观测站');
+        marker_pdxinqu.setLabel({
+            offset: new AMap.Pixel(-20, -15),
+            content: "778"
+        });
+
+        // 浦东张江
+        var marker_pdzhangjiang = new AMap.Marker({
+            position: new AMap.LngLat(121.588475, 31.207949),
+            title: '浦东张江'
+        });
+        marker_pdzhangjiang.setTitle('浦东张江观测站');
+        marker_pdzhangjiang.setLabel({
+            offset: new AMap.Pixel(-20, -15),
+            content: "768"
+        });
+
+        // 普陀
+        var marker_putuo = new AMap.Marker({
+            position: new AMap.LngLat(121.417679, 31.241087),
+            title: '普陀'
+        });
+        marker_putuo.setTitle('普陀观测站');
+        marker_putuo.setLabel({
+            offset: new AMap.Pixel(-20, -15),
+            content: "778"
+        });
+
+        // 青浦淀山湖
+        var marker_qingpu = new AMap.Marker({
+            position: new AMap.LngLat(121.099302, 31.140646),
+            title: '青浦淀山湖'
+        });
+        marker_qingpu.setTitle('青浦淀山湖观测站');
+        marker_qingpu.setLabel({
+            offset: new AMap.Pixel(-20, -15),
+            content: "799"
+        });
+
+        //十五厂(卢湾师专附小)
+        var marker_shiwuchang = new AMap.Marker({
+            position: new AMap.LngLat(121.488848, 31.208004),
+            title: '十五厂'
+        });
+        marker_shiwuchang.setTitle('十五厂(卢湾师专附小)观测站');
+        marker_shiwuchang.setLabel({
+            offset: new AMap.Pixel(-20, -15),
+            content: "799"
+        });
+
+        // 徐汇上师大
+        var marker_xuhui = new AMap.Marker({
+            position: new AMap.LngLat(121.42531, 31.167918),
+            title: '徐汇上师大'
+        });
+        marker_xuhui.setTitle('徐汇上师大观测站');
+        marker_xuhui.setLabel({
+            offset: new AMap.Pixel(-20, -15),
+            content: "769"
+        });
+
+        // 杨浦四漂
+        var marker_yangpu = new AMap.Marker({
+            position: new AMap.LngLat(121.544531, 31.270083),
+            title: '杨浦四漂'
+        });
+        marker_yangpu.setTitle('杨浦四漂观测站');
+        marker_yangpu.setLabel({
+            offset: new AMap.Pixel(-20, -15),
+            content: "109"
+        });
+
+        map.add(marker_jingan);
+        map.add(marker_hongkou);
+        map.add(marker_pdchuansha);
+        map.add(marker_pdxinqu);
+        map.add(marker_pdzhangjiang);
+        map.add(marker_putuo);
+        map.add(marker_qingpu);
+        map.add(marker_shiwuchang);
+        map.add(marker_xuhui);
+        map.add(marker_yangpu);
+
+
+    </script>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
