@@ -1,0 +1,244 @@
+{% extends "viz.html" %}
+{% block chart %}
+
+    <script>
+    var obj = document.getElementById('indextitle');
+    obj.innerText = "折线图"
+    var ChartItem = function () {
+        return {
+            name: '',
+            type: 'line',
+            markPoint: {
+                data: [
+                    {type: 'max', name: '最高值'},
+                    {type: 'min', name: '最低值'},
+                    {type: 'average', name: '平均值'}
+                ]
+            },
+            data: []
+        }
+    };
+
+    $(function () {
+        $("#request_button .btn").click(function () {
+
+            var request_data = {};
+            request_data['start'] = $('.form_datetime_start').data("datetimepicker").getDate();
+            request_data['end'] = $('.form_datetime_end').data("datetimepicker").getDate();
+            request_data['pollution'] = $('#polpicker').val();
+            request_data['geopoint'] = $('#geopicker').val();
+            // alert(request_data['pollution']);
+            $.ajax({
+                url: '/airdata',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify(request_data),  //转为字符串
+                contentType: 'application/json; charset=UTF-8',
+                success: function (data) {
+                    myChart.clear();
+                    var newChart = echarts.init(document.getElementById('main_charts'));
+                    var app = {
+                        xday: [],
+                        lengends: [],
+                        yvalue: []
+                    };
+                    for (var obj in request_data['pollution']) {
+                        if (request_data['pollution'][obj] == 'aqi') {
+                            var chartitem = new ChartItem();
+                            chartitem.name = 'AQI';
+                            chartitem.data = data.pollution.aqi;
+                            app.yvalue.push(chartitem);
+                            app.lengends.push('AQI');
+                        }
+                        if (request_data['pollution'][obj] == 'pm25') {
+                            var chartitem = new ChartItem();
+                            chartitem.name = 'PM2.5';
+                            chartitem.data = data.pollution.pm25;
+                            app.yvalue.push(chartitem);
+                            app.lengends.push('PM2.5');
+                        }
+                        if (request_data['pollution'][obj] == 'pm10') {
+                            var chartitem = new ChartItem();
+                            chartitem.name = 'PM10';
+                            chartitem.data = data.pollution.pm10;
+                            app.yvalue.push(chartitem);
+                            app.lengends.push('PM10');
+                        }
+                        if (request_data['pollution'][obj] == 'co') {
+                            var chartitem = new ChartItem();
+                            chartitem.name = 'CO';
+                            chartitem.data = data.pollution.co;
+                            app.yvalue.push(chartitem);
+                            app.lengends.push('CO');
+                        }
+                        if (request_data['pollution'][obj] == 'no2') {
+                            var chartitem = new ChartItem();
+                            chartitem.name = 'NO2';
+                            chartitem.data = data.pollution.no2;
+                            app.yvalue.push(chartitem);
+                            app.lengends.push('NO2');
+                        }
+                        if (request_data['pollution'][obj] == 'ozone1hour') {
+                            var chartitem = new ChartItem();
+                            chartitem.name = 'O3';
+                            chartitem.data = data.pollution.ozone1hour;
+                            app.yvalue.push(chartitem);
+                            app.lengends.push('O3');
+                        }
+                        if (request_data['pollution'][obj] == 'ozone8hour') {
+                            var chartitem = new ChartItem();
+                            chartitem.name = 'O3/8h';
+                            chartitem.data = data.pollution.ozone8hour;
+                            app.yvalue.push(chartitem);
+                            app.lengends.push('O3/8h');
+                        }
+                        if (request_data['pollution'][obj] == 'so2') {
+                            var chartitem = new ChartItem();
+                            chartitem.name = 'SO2';
+                            chartitem.data = data.pollution.so2;
+                            app.yvalue.push(chartitem);
+                            app.lengends.push('SO2');
+                        }
+                    }
+
+
+                    app.xday = data.time;
+
+                    newChart.setOption({
+                        title: {
+                            text: '展示类型 - 折线图',
+                            subtext: '鼠标悬停可查看详细信息'
+                        },
+                        tooltip: {trigger: 'axis'},
+                        legend: {
+                            data: app.lengends
+                        },
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                mark: {show: true},
+                                dataView: {show: true, readOnly: false},
+                                restore: {show: true},
+                                saveAsImage: {show: true}
+                            }
+                        },
+                        calculable: true,
+                        xAxis: {
+                            show: true,
+                            data: app.xday,
+                        },
+                        yAxis: [
+                            {
+                                show: true,
+                                type: 'value',
+                            }
+                        ],
+                        series: app.yvalue
+                    })
+                },
+
+
+                error: function (msg) {
+                    console.log(msg);
+                    alert('Error!');
+                }
+
+            });
+
+
+        });
+
+    });
+</script>
+<br/>
+
+
+    <div id="main_charts" style="width: 1000px;height:600px;margin: 0 auto;"></div>
+    <script>
+
+        var myChart = echarts.init(document.getElementById('main_charts'));
+
+        var app = {
+            xday: [],
+            yvalue: []
+        };
+
+        // 发送ajax请求，从后台获取json数据
+        $(document).ready(function () {
+            getData();
+        });
+
+        function getData() {
+            $.ajax({
+                url: '/airdata',
+                data: {},
+                type: 'GET',
+                async: true,
+                dataType: 'json',
+                success: function (data) {
+                    app.xday = data.time;
+                    app.yvalue = data.pm25;
+                    myChart.setOption({
+                        title: {
+                            text: '展示类型 - 柱状图',
+                            subtext: '鼠标悬停可查看详细信息'
+                        },
+                        tooltip: {trigger: 'axis'},
+                        legend: {
+                            data: ['pm2.5']
+                        },
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                mark: {show: true},
+                                dataView: {show: true, readOnly: false},
+                                magicType: {show: true, type: [ 'line']},
+                                restore: {show: true},
+                                saveAsImage: {show: true}
+                            }
+                        },
+                        calculable: true,
+                        xAxis: {
+                            show: true,
+                            data: app.xday,
+                            name: '日期',
+                        },
+                        yAxis: [
+                            {
+                                show: true,
+                                type: 'value',
+
+
+                            }
+                        ],
+                        series: [{
+                            name: 'pm2.5',
+                            type: 'line',
+                            data: app.yvalue,
+
+                            markPoint: {
+
+                                data: [
+                                    {type: 'max', name: '最高值'},
+                                    {type: 'min', name: '最低值'},
+                                    {type: 'average', name: '平均值'}
+                                ],
+
+                            },
+                        }]
+                    })
+                },
+
+
+                error: function (msg) {
+                    console.log(msg);
+                    alert('Error!');
+                }
+            })
+        };
+
+    </script>
+
+{% endblock %}
+
+

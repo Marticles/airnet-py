@@ -35,31 +35,64 @@
         }
     </script>
 
-    <div class="text-center">
-        <h4 class=" row col-lg-12 ">
-            <span id="NowTime"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>上次数据更新时间：【2018-4-30 23:00】</span>
-        </h4>
+
+
+
+    <div class="breadcrumb row col-md-11 col-md-offset-1 " style="text-align:center;">
+
+            <span id="NowTime" style="font-size:17px" ></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:17px">上次数据更新时间：【2018-4-30 23:00】</span>
+
 
     </div>
 
     <!--选择时间-->
-    <div class="form-group" >
+    <div class="col-md-2 col-md-offset-4">
+            <div class="input-group date form_datetime_start  "
+                 data-date-format="yyyy-mm-dd hh:ii " data-link-field="dtp_input1" style="float:left">
 
-        <div class="input-group date form_datetime col-md-2 col-md-offset-5 " data-date="2016-09-01T12:00:00Z"
-             data-date-format="dd MM yyyy - HH:ii " data-link-field="dtp_input1" style="">
-
-            <input class="form-control" size="1" type="text" value="2018-9-01 12:00:00" readonly>
-            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-
+                <input class="form-control" data-format="yyyy-mm-dd hh:ii:ss" size="1" type="text"
+                       value="2018-3-25 12:00" readonly>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                <input type="hidden" id="dtp_input1" value=""/>
+            </div>
         </div>
-        <input type="hidden" id="dtp_input1" value=""/>
+<div class="col-sm-2">
+        <select class="selectpicker " title="选择污染物" data-live-search="true" >
+            <optgroup label="AQI/每小时平均">
+                <option value="aqi">AQI</option>
+            </optgroup>
+            <optgroup label="PM2.5/每小时平均">
+                <option value="pm25">PM2.5</option>
+            </optgroup>
+            <optgroup label="PM10/每小时平均">
+                <option value="pm10">PM10</option>
+            </optgroup>
+            <optgroup label="SO2/每小时平均">
+                <option value="so2">SO2</option>
+            </optgroup>
+            <optgroup label="NO2/每小时平均">
+                <option value="no2">NO2</option>
+            </optgroup>
+            <optgroup label="CO/每小时平均">
+                <option value="co">CO</option>
+            </optgroup>
+            <optgroup label="O3/每小时平均/八小时平均">
+                <option value="ozone1hour">O3</option>
+                <option value="ozone8hour">O3/8h</option>
+            </optgroup>
 
+
+
+
+        </select>
 
     </div>
-
-    <script>
-        $('.form_datetime').datetimepicker({
+    <div id="request_button">
+        <button type="submit" class="btn btn-success">确认</button>
+    </div>
+        <script>
+        $('.form_datetime_start').datetimepicker({
             language: 'zh-CN',
             weekStart: 1, //一周从哪一天开始
             todayBtn: 1, //
@@ -68,63 +101,10 @@
             startView: 2,
             forceParse: 0,
         });
-    </script>
+        </script>
 
 
-
-
-    <div class="checkbox" style="text-align:center">
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"> AQI
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"> PM2.5
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> PM2.5/24h
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> PM10
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> PM10/24h
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> SO2
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> SO2/24h
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> NO2
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> NO2/24h
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> O3
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> O3/8h
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> O3/24h
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> O3/8h/24h
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> CO
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"> CO/24h
-        </label>&nbsp;&nbsp;
-        <button type="button" class="btn btn-success">确认</button>
-    </div>
-
-
-
-
+    <br>
     <div id="mapcontainer" style="width:1200px; height:800px;margin:0 auto;"></div>
 
     <script>

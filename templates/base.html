@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-select.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
         <style>
             body {
@@ -24,6 +25,7 @@
         <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.zh-CN.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap-select.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
     {% endblock %}
 
@@ -45,14 +47,34 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li ><a href="/">总览</a></li>
-                <li><a href="linebarchart">折线/柱状图</a></li>
-                <li><a href="test">test</a></li>
-                <li><a href="pm25">实时排行</a></li>
-                <li><a href="pm25">PM2.5预测</a></li>
+                <li><a href="/">总览</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        可视化
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('line') }}">标准折线图</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ url_for('bar') }}">标准柱状图</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ url_for('scatter') }}">标准散点图</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ url_for('pie') }}">标准饼图</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ url_for('rose') }}">南丁格尔玫瑰图</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ url_for('radar') }}">雷达图</a></li>
+
+
+                    </ul>
+                </li>
+                <li><a href="{{ url_for('test') }}">test</a></li>
+                <li><a href="#">实时排行</a></li>
+                <li><a href="#">PM2.5预测</a></li>
                 <li><a href="#">污染物预警</a></li>
-                <li><a href="export">数据导出</a></li>
-                <li><a href="about">关于AirNet</a></li>
+                <li><a href="#">数据导出</a></li>
+                <li><a href="{{ url_for('about') }}">关于AirNet</a></li>
             </ul>
         </div><!-- /.nav-collapse -->
     </div><!-- /.container -->

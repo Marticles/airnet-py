@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="row col-md-11 col-md-offset-1">
+    <div class="col-md-11 ">
+        <ol class="breadcrumb">
+            <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"> 主页</span></a></li>
+            <li class="active" id ="indextitle">折线图</li>
+        </ol>
+    </div>
+</div><!-- /.row -->
+<!--选择开始时间-->
+
+<div class="form-group ">
+
+
+    <div class="col-md-2 col-md-offset-2">
+        <div class="input-group date form_datetime_start  "
+             data-date-format="yyyy-mm-dd hh:ii " data-link-field="dtp_input1" style="float:left">
+
+            <input class="form-control" data-format="yyyy-mm-dd hh:ii:ss" size="1" type="text"
+                   value="2018-3-25 12:00" readonly>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            <input type="hidden" id="dtp_input1" value=""/>
+        </div>
+    </div>
+
+
+    <div class="col-sm-2">
+        <div class="input-group date form_datetime_end  "
+             data-date-format="yyyy-mm-dd hh:ii " data-link-field="dtp_input2" style="float:left">
+
+            <input class="form-control" data-format="yyyy-mm-dd hh:ii:ss" size="1" type="text"
+                   value="2018-3-29 12:00" readonly>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            <input type="hidden" id="dtp_input2" value=""/>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-2">
+    <select class="selectpicker " id="geopicker" title="选择观测站(默认上海杨浦)" style="font-color:black">
+        <optgroup label="静安">
+            <option value="jingan">静安观测站</option>
+        </optgroup>
+        <optgroup label="虹口">
+            <option value="hongkou">虹口观测站</option>
+        </optgroup>
+        <optgroup label="浦东">
+            <option value="pudongchuansha">浦东川沙观测站</option>
+            <option value="pudongxinqu">浦东新区观测站</option>
+            <option value="pudongzhangjiang">浦东张江观测站</option>
+        </optgroup>
+        <optgroup label="普陀">
+            <option value="putuo">普陀观测站</option>
+        </optgroup>
+        <optgroup label="黄埔">
+            <option value="shiwuchang">十五厂(卢湾师专附小)观测站</option>
+        </optgroup>
+        <optgroup label="杨浦">
+            <option value="yangpusipiao">杨浦四漂观测站</option>
+        </optgroup>
+        <optgroup label="徐汇">
+            <option value="xuhuishangshida">徐汇上师大观测站</option>
+        </optgroup>
+        <optgroup label="青浦">
+            <option value="qingpudianshanhu">青浦淀山湖观测站</option>
+        </optgroup>
+
+    </select>
+</div>>
+
+<div class="col-sm-2">
+    <select class="selectpicker " id="polpicker" title="选择污染物(默认PM2.5)" multiple data-actions-box="true">
+        <optgroup label="AQI/每小时平均">
+            <option value="aqi">AQI</option>
+        </optgroup>
+        <optgroup label="PM2.5/每小时平均">
+            <option value="pm25">PM2.5</option>
+        </optgroup>
+        <optgroup label="PM10/每小时平均">
+            <option value="pm10">PM10</option>
+        </optgroup>
+        <optgroup label="SO2/每小时平均">
+            <option value="so2">SO2</option>
+        </optgroup>
+        <optgroup label="NO2/每小时平均">
+            <option value="no2">NO2</option>
+        </optgroup>
+        <optgroup label="CO/每小时平均">
+            <option value="co">CO</option>
+        </optgroup>
+        <optgroup label="O3/每小时平均/八小时平均">
+            <option value="ozone1hour">O3</option>
+            <option value="ozone8hour">O3/8h</option>
+        </optgroup>
+
+
+    </select>
+</div>
+
+
+<div id="request_button">
+    <button type="submit" class="btn btn-success">确认</button>
+</div>
+
+
+<script>
+    $('.form_datetime_start').datetimepicker({
+        language: 'zh-CN',
+        weekStart: 1, //一周从哪一天开始
+        todayBtn: 1, //
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+    });
+
+    $('.form_datetime_end').datetimepicker({
+        language: 'zh-CN',
+        weekStart: 1, //一周从哪一天开始
+        todayBtn: 1, //
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+    });
+
+</script>
+
+
+
+{% block chart %}
+
+{% endblock %}
+
+{% endblock %}
