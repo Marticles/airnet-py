@@ -2,6 +2,7 @@
 {% block chart %}
 
     <script>
+    var theme = 'macarons';
     var obj = document.getElementById('indextitle');
     obj.innerText = "折线图"
     var ChartItem = function () {
@@ -36,7 +37,7 @@
                 contentType: 'application/json; charset=UTF-8',
                 success: function (data) {
                     myChart.clear();
-                    var newChart = echarts.init(document.getElementById('main_charts'));
+                    var newChart = echarts.init(document.getElementById('main_charts'),theme);
                     var app = {
                         xday: [],
                         lengends: [],
@@ -156,7 +157,7 @@
     <div id="main_charts" style="width: 1000px;height:600px;margin: 0 auto;"></div>
     <script>
 
-        var myChart = echarts.init(document.getElementById('main_charts'));
+        var myChart = echarts.init(document.getElementById('main_charts'),theme);
 
         var app = {
             xday: [],
@@ -180,7 +181,7 @@
                     app.yvalue = data.pm25;
                     myChart.setOption({
                         title: {
-                            text: '展示类型 - 柱状图',
+                            text: '展示类型 - 折线图',
                             subtext: '鼠标悬停可查看详细信息'
                         },
                         tooltip: {trigger: 'axis'},

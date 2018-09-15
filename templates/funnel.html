@@ -6,7 +6,7 @@
             <ol class="breadcrumb">
                 <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"> 主页</span></a></li>
                 <li class="active " id="indextitle">
-                    饼图
+                    漏斗图
                 </li>
             </ol>
         </div>
@@ -118,7 +118,7 @@
     </script>
     <script>
         var obj = document.getElementById('indextitle');
-        obj.innerText = "饼图"
+        obj.innerText = "漏斗图"
 
 
         $(function () {
@@ -216,7 +216,7 @@
 
                         myChart.setOption({
                             title: {
-                                text: '展示类型 - 饼图 / ' + '已选时长 - ' + app.days + '小时 / ',
+                                text: '展示类型 - 漏斗图 / ' + '已选时长 - ' + app.days + '小时 ≈ '+ (app.days/24).toFixed(1)+'天',
                                 subtext: '鼠标悬停可查看详细信息',
                                 x: 'center'
                             },
@@ -251,7 +251,7 @@
 
                             series: [{
                                 name: pie_name,
-                                type: 'pie',
+                                type: 'funnel',
                                 label: {
                                     normal: {
                                         show: true,
@@ -292,7 +292,7 @@
             days: [],
             exellent: [],
             good: [],
-            // 1 2 3 4轻/中/重度/严重污染
+            // 1 2 3 轻/中/重度污染
             polluted1: [],
             polluted2: [],
             polluted3: [],
@@ -362,7 +362,7 @@
 
                     myChart.setOption({
                         title: {
-                            text: '展示类型 - 饼图 / ' + '已选时长 - ' + app.days + '小时 ≈ '+ (app.days/24).toFixed(1)+'天',
+                            text: '展示类型 - 漏斗图 / ' + '已选时长 - ' + app.days + '小时 ≈ '+ (app.days/24).toFixed(1)+'天',
                             subtext: '鼠标悬停可查看详细信息',
                             x: 'center'
                         },
@@ -398,7 +398,7 @@
                         series: [{
                             name: '空气质量等级',
 
-                            type: 'pie',
+                            type: 'funnel',
 
                             label: {
                                 normal: {
@@ -412,7 +412,7 @@
                                 {value: app.polluted1, name: '轻度污染'},
                                 {value: app.polluted2, name: '中度污染'},
                                 {value: app.polluted3, name: '重度污染'},
-                                {value: app.polluted4, name: '严重污染'}
+                                {value: app.polluted3, name: '严重污染'}
                             ]
 
                         }]

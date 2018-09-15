@@ -27,6 +27,8 @@
         <script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.zh-CN.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap-select.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/echarts.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='theme/macarons.js') }}"></script>
+
     {% endblock %}
 
     {% block extrajs %} {% endblock %}
@@ -64,7 +66,9 @@
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url_for('rose') }}">南丁格尔玫瑰图</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="{{ url_for('radar') }}">雷达图</a></li>
+                        <li><a href="{{ url_for('radar') }}">标准雷达图</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ url_for('funnel') }}">标准漏斗图</a></li>
 
 
                     </ul>

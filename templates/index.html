@@ -22,7 +22,7 @@
             hour = time.getHours();
             minutes = time.getMinutes();
             seconds = time.getSeconds();
-            str = str + year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds+"】";
+            str = str + year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds + "】";
 
             p.innerText = str;
 
@@ -32,7 +32,10 @@
 
         window.onload = function () {
             getTime();
+
         }
+
+
     </script>
 
 
@@ -40,25 +43,25 @@
 
     <div class="breadcrumb row col-md-11 col-md-offset-1 " style="text-align:center;">
 
-            <span id="NowTime" style="font-size:17px" ></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:17px">上次数据更新时间：【2018-4-30 23:00】</span>
+        <span id="NowTime" style="font-size:17px"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:17px">上次数据更新时间：【2018-4-30 23:00】</span>
 
 
     </div>
 
     <!--选择时间-->
     <div class="col-md-2 col-md-offset-4">
-            <div class="input-group date form_datetime_start  "
-                 data-date-format="yyyy-mm-dd hh:ii " data-link-field="dtp_input1" style="float:left">
+        <div class="input-group date form_datetime_start  "
+             data-date-format="yyyy-mm-dd hh:ii " data-link-field="dtp_input1" style="float:left">
 
-                <input class="form-control" data-format="yyyy-mm-dd hh:ii:ss" size="1" type="text"
-                       value="2018-3-25 12:00" readonly>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                <input type="hidden" id="dtp_input1" value=""/>
-            </div>
+            <input class="form-control" data-format="yyyy-mm-dd hh:ii:ss" size="1" type="text"
+                   value="2018-4-2 15:00" readonly>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            <input type="hidden" id="dtp_input1" value=""/>
         </div>
-<div class="col-sm-2">
-        <select class="selectpicker " title="选择污染物" data-live-search="true" >
+    </div>
+    <div class="col-sm-2">
+        <select class="selectpicker " id="polpicker" title="选择污染物(默认AQI)">
             <optgroup label="AQI/每小时平均">
                 <option value="aqi">AQI</option>
             </optgroup>
@@ -81,9 +84,12 @@
                 <option value="ozone1hour">O3</option>
                 <option value="ozone8hour">O3/8h</option>
             </optgroup>
-
-
-
+            <optgroup label="(优、良、轻度污染、中毒污染、重度污染、严重)">
+                <option value="level">空气质量等级</option>
+            </optgroup>
+            <optgroup label="(细颗粒物PM2.5、颗粒物PM10、细颗粒物PM2.5&颗粒物PM10)">
+                <option value="primarypollutant">首要污染物</option>
+            </optgroup>
 
         </select>
 
@@ -91,7 +97,8 @@
     <div id="request_button">
         <button type="submit" class="btn btn-success">确认</button>
     </div>
-        <script>
+
+    <script>
         $('.form_datetime_start').datetimepicker({
             language: 'zh-CN',
             weekStart: 1, //一周从哪一天开始
@@ -101,13 +108,350 @@
             startView: 2,
             forceParse: 0,
         });
-        </script>
+        var app = {
+            time: [],
+            jingan_aqi: [],
+            jingan_pollution: [],
+            hongkou_aqi: [],
+            hongkou_pollution: [],
+            pudongchuansha_aqi: [],
+            pudongchuansha_pollution: [],
+            pudongxinqu_aqi: [],
+            pudongxinqu_pollution: [],
+            pudongzhangjiang_aqi: [],
+            pudongzhangjiang_pollution: [],
+            putuo_aqi: [],
+            putuo_pollution: [],
+            qingpudianshanhu_aqi: [],
+            qingpudianshanhu_pollution: [],
+            shiwuchang_aqi: [],
+            shiwuchang_pollution: [],
+            xuhuishangshida_aqi: [],
+            xuhuishangshida_pollution: [],
+            yangpusipiao_aqi: [],
+            ayangpusipiao_pollution: []
+
+
+        };
+
+        $(function () {
+            $("#request_button .btn").click(function () {
+                var request_data = {};
+                request_data['start'] = $('.form_datetime_start').data("datetimepicker").getDate();
+                request_data['pollution'] = $('#polpicker').val();
+
+                $.ajax({
+                    url: '/indexdata',
+                    type: 'POST',
+                    async: false,
+                    dataType: 'json',
+                    data: JSON.stringify(request_data),
+                    contentType: 'application/json; charset=UTF-8',
+                    success: function (data) {
+                        console.log(data);
+                        app.jingan_aqi = data.jingan[1];
+
+                        app.jingan_pollution = data.jingan[2];
+                        app.hongkou_aqi = data.hongkou[1];
+                        app.hongkou_pollution = data.hongkou[2];
+                        app.pudongchuansha_aqi = data.pudongchuansha[1];
+                        app.pudongchuansha_pollution = data.pudongchuansha[2];
+                        app.pudongxinqu_aqi = data.pudongxinqu[1];
+                        app.pudongxinqu_pollution = data.pudongxinqu[2];
+                        app.pudongzhangjiang_aqi = data.pudongzhangjiang[1];
+                        app.pudongzhangjiang_pollution = data.pudongzhangjiang[2];
+                        app.putuo_aqi = data.putuo[1];
+                        app.putuo_pollution = data.putuo[2];
+                        app.qingpudianshanhu_aqi = data.qingpudianshanhu[1];
+                        app.qingpudianshanhu_pollution = data.qingpudianshanhu[2];
+                        app.shiwuchang_aqi = data.shiwuchang[1];
+                        app.shiwuchang_pollution = data.shiwuchang[2];
+                        app.xuhuishangshida_aqi = data.xuhuishangshida[1];
+                        app.xuhuishangshida_pollution = data.xuhuishangshida[2];
+                        app.yangpusipiao_aqi = data.yangpusipiao[1];
+                        app.yangpusipiao_pollution = data.yangpusipiao[2];
+
+
+                    },
+                    error: function (msg) {
+                        console.log(msg);
+                        alert('Error!');
+                    }
+
+
+                });
+
+                map.clearMap();
+                map.add(marker_jingan);
+                map.add(marker_hongkou);
+                map.add(marker_pdchuansha);
+                map.add(marker_pdxinqu);
+                map.add(marker_pdzhangjiang);
+                map.add(marker_putuo);
+                map.add(marker_qingpu);
+                map.add(marker_shiwuchang);
+                map.add(marker_xuhui);
+                map.add(marker_yangpu);
+
+                // 静安点更新
+                if (app.jingan_aqi < 50) {
+                    marker_jingan.setIcon("static/images/excellent.png");
+                }
+
+                if (app.jingan_aqi >= 50 && app.jingan_aqi < 100) {
+                    marker_jingan.setIcon("static/images/good.png");
+                }
+                if (app.jingan_aqi >= 100 && app.jingan_aqi < 150) {
+                    marker_jingan.setIcon("static/images/pollution1.png");
+                }
+                if (app.jingan_aqi >= 150 & app.jingan_aqi < 200) {
+                    marker_jingan.setIcon("static/images/pollution2.png");
+                }
+                if (app.jingan_aqi >= 200 && app.jingan_aqi < 300) {
+                    marker_jingan.setIcon("static/images/pollution3.png");
+                }
+                if (app.jingan_aqi >= 300) {
+                    marker_jingan.setIcon("static/images/pollution4.png");
+                }
+
+                // 虹口点更新
+                if (app.hongkou_aqi < 50) {
+                    marker_hongkou.setIcon("static/images/excellent.png");
+                }
+                if (app.hongkou_aqi >= 50 && app.hongkou_aqi < 100) {
+                    marker_hongkou.setIcon("static/images/good.png");
+                }
+                if (app.hongkou_aqi >= 100 && app.hongkou_aqi < 150) {
+                    marker_hongkou.setIcon("static/images/pollution1.png");
+                }
+                if (app.hongkou_aqi >= 150 && app.hongkou_aqi < 200) {
+                    marker_hongkou.setIcon("static/images/pollution2.png");
+                }
+                if (app.hongkou_aqi >= 200 && app.hongkou_aqi < 300) {
+                    marker_hongkou.setIcon("static/images/pollution3.png");
+                }
+                if (app.hongkou_aqi >= 300) {
+                    marker_hongkou.setIcon("static/images/pollution4.png");
+                }
+
+                //浦东川沙点更新
+                if (app.pudongchuansha_aqi < 50) {
+                    marker_pdchuansha.setIcon("static/images/excellent.png");
+                }
+                if (app.pudongchuansha_aqi >= 50 && app.pudongchuansha_aqi < 100) {
+                    marker_pdchuansha.setIcon("static/images/good.png");
+                }
+                if (app.pudongchuansha_aqi >= 100 && app.pudongchuansha_aqi < 150) {
+                    marker_pdchuansha.setIcon("static/images/pollution1.png");
+                }
+                if (app.pudongchuansha_aqi >= 150 && app.pudongchuansha_aqi < 200) {
+                    marker_pdchuansha.setIcon("static/images/pollution2.png");
+                }
+                if (app.pudongchuansha_aqi >= 200 && app.pudongchuansha_aqi < 300) {
+                    marker_pdchuansha.setIcon("static/images/pollution3.png");
+                }
+                if (app.pudongchuansha_aqi >= 300) {
+                    marker_pdchuansha.setIcon("static/images/pollution4.png");
+                }
+
+                //浦东新区点更新
+                if (app.pudongxinqu_aqi < 50) {
+                    marker_pdxinqu.setIcon("static/images/excellent.png");
+                }
+                if (app.pudongxinqu_aqi >= 50 && app.pudongxinqu_aqi < 100) {
+                    marker_pdxinqu.setIcon("static/images/good.png");
+                }
+                if (app.pudongxinqu_aqi >= 100 && app.pudongxinqu_aqi < 150) {
+                    marker_pdxinqu.setIcon("static/images/pollution1.png");
+                }
+                if (app.pudongxinqu_aqi >= 150 && app.pudongxinqu_aqi < 200) {
+                    marker_pdxinqu.setIcon("static/images/pollution2.png");
+                }
+                if (app.pudongxinqu_aqi >= 200 && app.pudongxinqu_aqi < 300) {
+                    marker_pdxinqu.setIcon("static/images/pollution3.png");
+                }
+                if (app.pudongxinqu_aqi >= 300) {
+                    marker_pdxinqu.setIcon("static/images/pollution4.png");
+                }
+
+                //浦东张江点更新
+                if (app.pudongzhangjiang_aqi < 50) {
+                    marker_pdzhangjiang.setIcon("static/images/excellent.png");
+                }
+                if (app.pudongzhangjiang_aqi >= 50 && app.pudongzhangjiang_aqi < 100) {
+                    marker_pdzhangjiang.setIcon("static/images/good.png");
+                }
+                if (app.pudongzhangjiang_aqi >= 100 && app.pudongzhangjiang_aqi < 150) {
+                    marker_pdzhangjiang.setIcon("static/images/pollution1.png");
+                }
+                if (app.pudongzhangjiang_aqi >= 150 && app.pudongzhangjiang_aqi < 200) {
+                    marker_pdzhangjiang.setIcon("static/images/pollution2.png");
+                }
+                if (app.pudongzhangjiang_aqi >= 200 && app.pudongzhangjiang_aqi < 300) {
+                    marker_pdzhangjiang.setIcon("static/images/pollution3.png");
+                }
+                if (app.pudongzhangjiang_aqi >= 300) {
+                    marker_pdzhangjiang.setIcon("static/images/pollution4.png");
+                }
+
+                //普陀点更新
+                if (app.putuo_aqi < 50) {
+                    marker_putuo.setIcon("static/images/excellent.png");
+                }
+                if (app.putuo_aqi >= 50 && app.putuo_aqi < 100) {
+                    marker_putuo.setIcon("static/images/good.png");
+                }
+                if (app.putuo_aqi >= 100 && app.putuo_aqi < 150) {
+                    marker_putuo.setIcon("static/images/pollution1.png");
+                }
+                if (app.putuo_aqi >= 150 && app.putuo_aqi < 200) {
+                    marker_putuo.setIcon("static/images/pollution2.png");
+                }
+                if (app.putuo_aqi >= 200 && app.putuo_aqi < 300) {
+                    marker_putuo.setIcon("static/images/pollution3.png");
+                }
+                if (app.putuo_aqi >= 300) {
+                    marker_putuo.setIcon("static/images/pollution4.png");
+                }
+
+                //青浦点更新
+                if (app.qingpudianshanhu_aqi < 50) {
+                    marker_qingpu.setIcon("static/images/excellent.png");
+                }
+                if (app.qingpudianshanhu_aqi >= 50 && app.qingpudianshanhu_aqi < 100) {
+                    marker_qingpu.setIcon("static/images/good.png");
+                }
+                if (app.qingpudianshanhu_aqi >= 100 && app.qingpudianshanhu_aqi < 150) {
+                    marker_qingpu.setIcon("static/images/pollution1.png");
+                }
+                if (app.qingpudianshanhu_aqi >= 150 && app.qingpudianshanhu_aqi < 200) {
+                    marker_qingpu.setIcon("static/images/pollution2.png");
+                }
+                if (app.qingpudianshanhu_aqi >= 200 && app.qingpudianshanhu_aqi < 300) {
+                    marker_qingpu.setIcon("static/images/pollution3.png");
+                }
+                if (app.qingpudianshanhu_aqi >= 300) {
+                    marker_qingpu.setIcon("static/images/pollution4.png");
+                }
+
+                //十五厂点更新
+                if (app.shiwuchang_aqi < 50) {
+                    marker_shiwuchang.setIcon("static/images/excellent.png");
+                }
+                if (app.shiwuchang_aqi >= 50 && app.shiwuchang_aqi < 100) {
+                    marker_shiwuchang.setIcon("static/images/good.png");
+                }
+                if (app.shiwuchang_aqi >= 100 && app.shiwuchang_aqi < 150) {
+                    marker_shiwuchang.setIcon("static/images/pollution1.png");
+                }
+                if (app.shiwuchang_aqi >= 150 && app.shiwuchang_aqi < 200) {
+                    marker_shiwuchang.setIcon("static/images/pollution2.png");
+                }
+                if (app.shiwuchang_aqi >= 200 && app.shiwuchang_aqi < 300) {
+                    marker_shiwuchang.setIcon("static/images/pollution3.png");
+                }
+                if (app.shiwuchang_aqi >= 300) {
+                    marker_shiwuchang.setIcon("static/images/pollution4.png");
+                }
+
+                //徐汇点更新
+                if (app.xuhuishangshida_aqi < 50) {
+                    marker_xuhui.setIcon("static/images/excellent.png");
+                }
+                if (app.xuhuishangshida_aqi >= 50 && app.xuhuishangshida_aqi < 100) {
+                    marker_xuhui.setIcon("static/images/good.png");
+                }
+                if (app.xuhuishangshida_aqi >= 100 && app.xuhuishangshida_aqi < 150) {
+                    marker_xuhui.setIcon("static/images/pollution1.png");
+                }
+                if (app.xuhuishangshida_aqi >= 150 && app.xuhuishangshida_aqi < 200) {
+                    marker_xuhui.setIcon("static/images/pollution2.png");
+                }
+                if (app.xuhuishangshida_aqi >= 200 && app.xuhuishangshida_aqi < 300) {
+                    marker_xuhui.setIcon("static/images/pollution3.png");
+                }
+                if (app.xuhuishangshida_aqi >= 300) {
+                    marker_xuhui.setIcon("static/images/pollution4.png");
+                }
+                //杨浦点更新
+                if (app.yangpusipiao_aqi < 50) {
+                    marker_yangpu.setIcon("static/images/excellent.png");
+                }
+                if (app.yangpusipiao_aqi >= 50 && app.yangpusipiao_aqi < 100) {
+                    marker_yangpu.setIcon("static/images/good.png");
+                }
+                if (app.yangpusipiao_aqi >= 100 && app.yangpusipiao_aqi < 150) {
+                    marker_yangpu.setIcon("static/images/pollution1.png");
+                }
+                if (app.yangpusipiao_aqi >= 150 && app.yangpusipiao_aqi < 200) {
+                    marker_yangpu.setIcon("static/images/pollution2.png");
+                }
+                if (app.yangpusipiao_aqi >= 200 && app.yangpusipiao_aqi < 300) {
+                    marker_yangpu.setIcon("static/images/pollution3.png");
+                }
+                if (app.yangpusipiao_aqi >= 300) {
+                    marker_yangpu.setIcon("static/images/pollution4.png");
+                }
+
+                marker_jingan.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.jingan_pollution
+                });
+
+                marker_hongkou.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.hongkou_pollution
+                });
+                marker_pdchuansha.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.pudongchuansha_pollution
+                });
+                marker_pdxinqu.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.pudongxinqu_pollution
+                });
+                marker_pdzhangjiang.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.pudongzhangjiang_pollution
+                });
+                marker_putuo.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.putuo_pollution
+                });
+                marker_qingpu.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.qingpudianshanhu_pollution
+                });
+                marker_shiwuchang.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.shiwuchang_pollution
+                });
+                marker_xuhui.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.xuhuishangshida_pollution
+                });
+                marker_yangpu.setLabel({
+                    offset: new AMap.Pixel(-20, -15),
+                    content: app.yangpusipiao_pollution
+                });
+
+
+            });
+
+        });
+
+
+    </script>
 
 
     <br>
-    <div id="mapcontainer" style="width:1200px; height:800px;margin:0 auto;"></div>
+    <div id="mapcontainer" style="width:1200px; height:800px;margin:0 auto;">
+
+    </div>
 
     <script>
+
+
         var map = new AMap.Map('mapcontainer', {
             resizeEnable: true,
             zoom: 11,
@@ -116,7 +460,8 @@
         // 静安
         var marker_jingan = new AMap.Marker({
             position: new AMap.LngLat(121.436183, 31.230475),   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-            title: '静安观测站'
+            title: '静安',
+            icon: "static/images/pollution2.png"
         });
         // 设置鼠标划过点标记显示的文字提示
         marker_jingan.setTitle('静安观测站');
@@ -124,106 +469,119 @@
         // 设置label标签
         marker_jingan.setLabel({//label默认蓝框白底左上角显示，样式className为：amap-marker-label
             offset: new AMap.Pixel(-20, -15),//修改label相对于maker的位置
-            content: "999"
+            content: '中度污染',
+
         });
 
         // 虹口
         var marker_hongkou = new AMap.Marker({
             position: new AMap.LngLat(121.484901, 31.280611),
-            title: '虹口'
+            title: '虹口',
+            icon: "static/images/good.png"
         });
         marker_hongkou.setTitle('虹口观测站');
         marker_hongkou.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content: "888"
+            content: '良'
         });
 
         // 浦东川沙
         var marker_pdchuansha = new AMap.Marker({
             position: new AMap.LngLat(121.713507, 31.194598),
-            title: '浦东川沙'
+            title: '浦东川沙',
+            icon: "static/images/excellent.png"
+
         });
         marker_pdchuansha.setTitle('浦东川沙观测站');
         marker_pdchuansha.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content: "888"
+            content: '优'
         });
 
         // 浦东新区
         var marker_pdxinqu = new AMap.Marker({
             position: new AMap.LngLat(121.544779, 31.232901),
-            title: '浦东新区'
+            title: '浦东新区',
+            icon: "static/images/good.png"
+
         });
         marker_pdxinqu.setTitle('浦东新区观测站');
         marker_pdxinqu.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content: "778"
+            content: '良'
         });
 
         // 浦东张江
         var marker_pdzhangjiang = new AMap.Marker({
             position: new AMap.LngLat(121.588475, 31.207949),
-            title: '浦东张江'
+            title: '浦东张江',
+            icon: "static/images/pollution1.png"
+
         });
         marker_pdzhangjiang.setTitle('浦东张江观测站');
         marker_pdzhangjiang.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content: "768"
+            content: '轻度污染'
         });
 
         // 普陀
         var marker_putuo = new AMap.Marker({
             position: new AMap.LngLat(121.417679, 31.241087),
-            title: '普陀'
+            title: '普陀',
+            icon: "static/images/pollution1.png"
         });
         marker_putuo.setTitle('普陀观测站');
         marker_putuo.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content: "778"
+            content:'轻度污染'
         });
 
         // 青浦淀山湖
         var marker_qingpu = new AMap.Marker({
             position: new AMap.LngLat(121.099302, 31.140646),
-            title: '青浦淀山湖'
+            title: '青浦淀山湖',
+            icon: "static/images/pollution1.png"
         });
         marker_qingpu.setTitle('青浦淀山湖观测站');
         marker_qingpu.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content: "799"
+            content: '轻度污染'
         });
 
         //十五厂(卢湾师专附小)
         var marker_shiwuchang = new AMap.Marker({
             position: new AMap.LngLat(121.488848, 31.208004),
-            title: '十五厂'
+            title: '十五厂',
+            icon: "static/images/good.png"
         });
         marker_shiwuchang.setTitle('十五厂(卢湾师专附小)观测站');
         marker_shiwuchang.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content: "799"
+            content: '良'
         });
 
         // 徐汇上师大
         var marker_xuhui = new AMap.Marker({
             position: new AMap.LngLat(121.42531, 31.167918),
-            title: '徐汇上师大'
+            title: '徐汇上师大',
+            icon: "static/images/good.png"
         });
         marker_xuhui.setTitle('徐汇上师大观测站');
         marker_xuhui.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content: "769"
+            content: '良'
         });
 
         // 杨浦四漂
         var marker_yangpu = new AMap.Marker({
             position: new AMap.LngLat(121.544531, 31.270083),
-            title: '杨浦四漂'
+            title: '杨浦四漂',
+            icon: "static/images/good.png"
         });
         marker_yangpu.setTitle('杨浦四漂观测站');
         marker_yangpu.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content: "109"
+            content: '良'
         });
 
         map.add(marker_jingan);

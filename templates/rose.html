@@ -76,7 +76,7 @@
 
     <div class="col-sm-2">
         <select class="selectpicker " id="polpicker" title="(默认空气质量等级)" data-actions-box="true">
-            <optgroup label="(优、良、轻度污染、中毒污染、重度污染)">
+            <optgroup label="(优、良、轻度污染、中度污染、重度污染、严重污染)">
                 <option value="level">空气质量等级</option>
             </optgroup>
             <optgroup label="(细颗粒物PM2.5、颗粒物PM10、细颗粒物PM2.5&颗粒物PM10)">
@@ -94,6 +94,7 @@
 
 
     <script>
+        var theme = 'macarons';
         $('.form_datetime_start').datetimepicker({
             language: 'zh-CN',
             weekStart: 1, //一周从哪一天开始
@@ -143,6 +144,7 @@
                             var counter_polluted1 = 0;
                             var counter_polluted2 = 0;
                             var counter_polluted3 = 0;
+                            var counter_polluted4 = 0;
                             for (var obj in value) {
                                 if (value[obj] == '优') {
                                     counter_exellent += 1;
@@ -159,20 +161,25 @@
                                 else if (value[obj] == '重度污染') {
                                     counter_polluted3 += 1;
                                 }
+                                else if (value[obj] == '严重污染') {
+                                    counter_polluted4 += 1;
+                                }
                                 app.exellent = counter_exellent;
                                 app.good = counter_good;
                                 app.polluted1 = counter_polluted1;
                                 app.polluted2 = counter_polluted2;
                                 app.polluted3 = counter_polluted3;
+                                app.polluted4 = counter_polluted4;
                                 var pie_data = [
                                     {value: app.exellent, name: '优'},
                                     {value: app.good, name: '良'},
                                     {value: app.polluted1, name: '轻度污染'},
                                     {value: app.polluted2, name: '中度污染'},
-                                    {value: app.polluted3, name: '重度污染'}
+                                    {value: app.polluted3, name: '重度污染'},
+                                    {value: app.polluted3, name: '严重污染'}
                                 ];
                                 var pie_name = '空气质量等级'
-                                var pie_legends = ['优', '良', '轻度污染', '中度污染', '重度污染']
+                                var pie_legends = ['优', '良', '轻度污染', '中度污染', '重度污染','严重污染']
 
                             }
                         }
@@ -209,7 +216,7 @@
 
                         myChart.setOption({
                             title: {
-                                text: '展示类型 - 南丁格尔玫瑰图 / ' + '已选时长 - ' + app.days + '小时 / ',
+                                text: '展示类型 - 南丁格尔玫瑰图 / ' + '已选时长 - ' + app.days + '小时 ≈ ' + (app.days / 24).toFixed(1) + '天',
                                 subtext: '鼠标悬停可查看详细信息',
                                 x: 'center'
                             },
@@ -245,7 +252,7 @@
                             series: [{
                                 name: pie_name,
                                 type: 'pie',
-                                roseType : 'radius',
+                                roseType: 'radius',
                                 label: {
                                     normal: {
                                         show: true,
@@ -274,7 +281,7 @@
     <div id="main_charts" style="width: 1000px;height:600px;margin: 0 auto;"></div>
     <script>
 
-        var myChart = echarts.init(document.getElementById('main_charts'));
+        var myChart = echarts.init(document.getElementById('main_charts'), theme);
 
 
         // 发送ajax请求，从后台获取json数据
@@ -286,10 +293,10 @@
             days: [],
             exellent: [],
             good: [],
-            // 1 2 3 轻/中/重度污染
             polluted1: [],
             polluted2: [],
             polluted3: [],
+            polluted4: [],
             pm25: [],
             pm10: [],
             pm25pm10: []
@@ -324,6 +331,7 @@
                     var counter_polluted1 = 0;
                     var counter_polluted2 = 0;
                     var counter_polluted3 = 0;
+                    var counter_polluted4 = 0;
                     for (var obj in value) {
                         if (value[obj] == '优') {
                             counter_exellent += 1;
@@ -340,17 +348,21 @@
                         else if (value[obj] == '重度污染') {
                             counter_polluted3 += 1;
                         }
+                        else if (value[obj] == '严重污染') {
+                            counter_polluted4 += 1;
+                        }
                         app.exellent = counter_exellent;
                         app.good = counter_good;
                         app.polluted1 = counter_polluted1;
                         app.polluted2 = counter_polluted2;
                         app.polluted3 = counter_polluted3;
+                        app.polluted4 = counter_polluted4;
 
                     }
 
                     myChart.setOption({
                         title: {
-                            text: '展示类型 - 南丁格尔玫瑰图 / ' + '已选时长 - ' + app.days + '小时 ≈ '+ (app.days/24).toFixed(1)+'天',
+                            text: '展示类型 - 南丁格尔玫瑰图 / ' + '已选时长 - ' + app.days + '小时 ≈ ' + (app.days / 24).toFixed(1) + '天',
                             subtext: '鼠标悬停可查看详细信息',
                             x: 'center'
                         },
@@ -358,7 +370,7 @@
                         legend: {
                             orient: 'vertical',
                             x: 'left',
-                            data: ['优', '良', '轻度污染', '中度污染', '重度污染']
+                            data: ['优', '良', '轻度污染', '中度污染', '重度污染', '严重污染']
                         },
                         toolbox: {
                             show: true,
@@ -387,7 +399,7 @@
                             name: '空气质量等级',
 
                             type: 'pie',
-                            roseType : 'radius',
+                            roseType: 'radius',
                             label: {
                                 normal: {
                                     show: true,
@@ -399,7 +411,8 @@
                                 {value: app.good, name: '良'},
                                 {value: app.polluted1, name: '轻度污染'},
                                 {value: app.polluted2, name: '中度污染'},
-                                {value: app.polluted3, name: '重度污染'}
+                                {value: app.polluted3, name: '重度污染'},
+                                {value: app.polluted3, name: '严重污染'}
                             ]
 
                         }]
