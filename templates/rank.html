@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+
+    <div class="row col-md-11 col-md-offset-1">
+        <div class="col-md-11 ">
+            <ol class="breadcrumb">
+                <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"> 主页</span></a></li>
+                <li class="active" id="indextitle">实时&历史排行</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-md-offset-4">
+        <div class="input-group date form_datetime_start  "
+             data-date-format="yyyy-mm-dd hh:ii " data-link-field="dtp_input1" style="float:left">
+
+            <input class="form-control" data-format="yyyy-mm-dd hh:ii:ss" size="1" type="text"
+                   value="2018-3-08 20:00" readonly>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            <input type="hidden" id="dtp_input1" value=""/>
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <select class="selectpicker " id="orderpicker" title="选择顺/倒序(默认顺序)" style="font-color:black">
+
+            <option value="order">顺序</option>
+            <option value="reverse">倒序</option>
+
+        </select>
+    </div>>
+
+
+    <div class="col-md-1 ">
+        <div id="order_button ">
+            <button type="submit" class="btn btn-success">确认</button>
+        </div>
+    </div>
+
+
+
+
+    <div class="row col-md-8 col-md-offset-2" style="margin-top:20px;">
+        <table id="tb" class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th style="text-align:center;">No</th>
+                <th style="text-align:center;">日期</th>
+                <th style="text-align:center;">城市/地点</th>
+                <th style="text-align:center;">AQI</th>
+                <th style="text-align:center;">空气质量等级</th>
+                <th style="text-align:center;">主要污染物</th>
+                <th style="text-align:center;">PM2.5</th>
+                <th style="text-align:center;">PM10</th>
+                <th style="text-align:center;">CO</th>
+                <th style="text-align:center;">NO2</th>
+                <th style="text-align:center;">O3</th>
+                <th style="text-align:center;">O3/8h</th>
+                <th style="text-align:center;">SO2</th>
+            </tr>
+            </thead>
+
+
+        </table>
+    </div>
+
+
+    <script>
+        $('.form_datetime_start').datetimepicker({
+            language: 'zh-CN',
+            weekStart: 1, //一周从哪一天开始
+            todayBtn: 1, //
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+        });
+
+        $(function() {
+        $(".btn").click(function(){
+            var request_data = {};
+            request_data['start'] = $('.form_datetime_start').data("datetimepicker").getDate();
+            request_data['order'] = $('#orderpicker').val();
+            $.ajax({
+                url: '/rankhistorydata',
+                type: 'POST',
+                async: true,
+                dataType: 'json',
+                data: JSON.stringify(request_data),  //转为字符串
+                contentType: 'application/json; charset=UTF-8',
+                success: function (json) {
+                    // console.log(json);
+                    $('#tb tr:gt(0)').remove();
+                    var tabledata = '';
+                    var color = '';
+
+                    for (var i = 0; i < json.length; i++) {
+
+                        if (json[i].aqi < 50) {
+                            color = '<td bgcolor="#7CCD7C" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 50 && json[i].aqi < 100) {
+                            color = '<td bgcolor="#B0E2FF" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 100 && json[i].aqi < 150) {
+                            color = '<td bgcolor="#FFF68F" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 150 && json[i].aqi < 200) {
+                            color = '<td bgcolor="#F4A460" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 200 && json[i].aqi < 300) {
+                            color = '<td bgcolor="#FF6A6A" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 300) {
+                            color = '<td bgcolor="#EE3B3B" >' + json[i].level + '</td>';
+                        }
+                        tabledata += '<tbody style="text-align:center;"><tr><td>' + (i + 1) + '</td><td>' + json[i].time + '</td><td>' + json[i].site + '</td><td>' + json[i].aqi + '</td>';
+                        tabledata += color;
+                        tabledata += '<td>' + json[i].primarypollutant + '</td><td>' + json[i].pm25 + '</td><td>' + json[i].pm10 + '</td><td>' + json[i].co + '</td><td>' + json[i].no2 + '</td><td>' + json[i].ozone1hour + '</td><td>' + json[i].ozone8hour + '</td><td>' + json[i].so2 + '</td></tr></tbody>';
+                    }
+
+                    $('#tb').append(tabledata);
+
+                }, error: function (msg) {
+                    console.log(msg);
+                    alert('Error!');
+                }
+            })
+
+        });
+    });
+
+
+
+        window.onload = function () {
+            $.ajax({
+                url: '/ranknowdata',
+                data: {},
+                type: 'GET',
+                async: true,
+                dataType: 'json',
+                success: function (json) {
+                    // console.log(json);
+                    $('#tb tr:gt(0)').remove();
+                    var tabledata = '';
+                    var color = '';
+
+                    for (var i = 0; i < json.length; i++) {
+
+                        if (json[i].aqi < 50) {
+                            color = '<td bgcolor="#7CCD7C" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 50 && json[i].aqi < 100) {
+                            color = '<td bgcolor="#B0E2FF" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 100 && json[i].aqi < 150) {
+                            color = '<td bgcolor="#FFF68F" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 150 && json[i].aqi < 200) {
+                            color = '<td bgcolor="#F4A460" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 200 && json[i].aqi < 300) {
+                            color = '<td bgcolor="#FF6A6A" >' + json[i].level + '</td>';
+                        }
+                        if (json[i].aqi > 300) {
+                            color = '<td bgcolor="#EE3B3B" >' + json[i].level + '</td>';
+                        }
+                        tabledata += '<tbody style="text-align:center;"><tr><td>' + (i + 1) + '</td><td>' + json[i].time + '</td><td>' + json[i].site + '</td><td>' + json[i].aqi + '</td>';
+                        tabledata += color;
+                        tabledata += '<td>' + json[i].primarypollutant + '</td><td>' + json[i].pm25 + '</td><td>' + json[i].pm10 + '</td><td>' + json[i].co + '</td><td>' + json[i].no2 + '</td><td>' + json[i].ozone1hour + '</td><td>' + json[i].ozone8hour + '</td><td>' + json[i].so2 + '</td></tr></tbody>';
+                    }
+
+                    $('#tb').append(tabledata);
+
+                }, error: function (msg) {
+                    console.log(msg);
+                    alert('Error!');
+                }
+            })
+        }
+
+
+    </script>
+
+
+
+
+
+{% endblock %}
+
+
+

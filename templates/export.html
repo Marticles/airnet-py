@@ -1,16 +1,16 @@
 {% extends "base.html" %}
+
 {% block body %}
-<div class="row col-md-11 col-md-offset-1">
+    <div class="row col-md-11 col-md-offset-1">
     <div class="col-md-11 ">
         <ol class="breadcrumb">
             <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"> 主页</span></a></li>
-            <li class="active" id ="indextitle">折线图</li>
+            <li class="active" id ="indextitle">数据导出</li>
         </ol>
     </div>
-</div><!-- /.row -->
-<!--选择开始时间-->
+</div>
 
-<div class="form-group ">
+    <div class="form-group ">
 
 
     <div class="col-md-2 col-md-offset-2">
@@ -38,9 +38,8 @@
         </div>
     </div>
 </div>
-
-<div class="col-sm-2">
-    <select class="selectpicker " id="geopicker" title="选择观测站(默认上海杨浦)" >
+    <div class="col-sm-2">
+    <select class="selectpicker " id="geopicker" title="选择数据来源观测站" style="font-color:black">
         <optgroup label="静安">
             <option value="jingan">静安观测站</option>
         </optgroup>
@@ -71,34 +70,6 @@
     </select>
 </div>>
 
-<div class="col-sm-2">
-    <select class="selectpicker " id="polpicker" title="选择污染物(默认PM2.5)" multiple data-actions-box="true">
-        <optgroup label="AQI/每小时平均">
-            <option value="aqi">AQI</option>
-        </optgroup>
-        <optgroup label="PM2.5/每小时平均">
-            <option value="pm25">PM2.5</option>
-        </optgroup>
-        <optgroup label="PM10/每小时平均">
-            <option value="pm10">PM10</option>
-        </optgroup>
-        <optgroup label="SO2/每小时平均">
-            <option value="so2">SO2</option>
-        </optgroup>
-        <optgroup label="NO2/每小时平均">
-            <option value="no2">NO2</option>
-        </optgroup>
-        <optgroup label="CO/每小时平均">
-            <option value="co">CO</option>
-        </optgroup>
-        <optgroup label="O3/每小时平均/八小时平均">
-            <option value="ozone1hour">O3</option>
-            <option value="ozone8hour">O3/8h</option>
-        </optgroup>
-
-
-    </select>
-</div>
 
 
 <div id="request_button">
@@ -128,13 +99,35 @@
     });
 
 
+$(function() {
+        $(".btn").click(function(){
+            var request_data = {};
+            var filename=  '/download/';
+            request_data['start'] = $('.form_datetime_start').data("datetimepicker").getDate();
+            request_data['end'] = $('.form_datetime_end').data("datetimepicker").getDate();
+            request_data['geopoint'] = $('#geopicker').val();
+            $.ajax({
+                url: '/exportdata',
+                type: 'POST',
+                async: false,
+                dataType: 'json',
+                data: JSON.stringify(request_data),  //转为字符串
+                contentType: 'application/json; charset=UTF-8',
+                success: function (json) {
+
+                    filename += json;
+                }, error: function (msg) {
+                    console.log(msg);
+                    alert('Error!');
+                }
+            })
+
+            window.open(window.location.href.replace('/export','')+filename);
+
+        });
+    });
+
 </script>
-<br/>
 
-
-
-{% block chart %}
-
-{% endblock %}
 
 {% endblock %}

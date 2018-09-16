@@ -1,6 +1,10 @@
-import pymysql
 import datetime
 import json
+
+
+import pandas as pd
+import pymysql
+
 from lib.data_to_json import DateEncoder
 
 
@@ -99,20 +103,119 @@ def get_index_data(start_time='2018-03-25 12:00:00', pollution='pm25'):
           'union all select time,aqi,`{7}` from shiwuchang WHERE time = %s' \
           'union all select time,aqi,`{8}` from xuhuishangshida WHERE time = %s' \
           'union all select time,aqi,`{9}` from yangpusipiao WHERE time = %s'
-    cur.execute(sql.format(pollution, pollution, pollution, pollution, pollution, pollution, pollution, pollution, pollution, pollution), (start_time,start_time,start_time,start_time,start_time,start_time,start_time,start_time,start_time,start_time))
+    cur.execute(
+        sql.format(pollution, pollution, pollution, pollution, pollution, pollution, pollution, pollution, pollution,
+                   pollution), (
+            start_time, start_time, start_time, start_time, start_time, start_time, start_time, start_time, start_time,
+            start_time))
     data = cur.fetchall()
     json_data = {}
     time = []
-    hongkou_aqi=[];hongkou_pollution=[]
-    jingan_aqi = [];jingan_pollution = []
-    geo = ('hongkou','jingan','pudongchuansha','pudongxinqu','pudongzhangjiang','putuo','qingpudianshanhu','shiwuchang','xuhuishangshida','yangpusipiao')
-    for x,v in zip(geo,data):
+    hongkou_aqi = [];
+    hongkou_pollution = []
+    jingan_aqi = [];
+    jingan_pollution = []
+    geo = (
+        'hongkou', 'jingan', 'pudongchuansha', 'pudongxinqu', 'pudongzhangjiang', 'putuo', 'qingpudianshanhu',
+        'shiwuchang',
+        'xuhuishangshida', 'yangpusipiao')
+    for x, v in zip(geo, data):
         json_data[x] = v
 
     index_json = json.dumps(json_data, cls=DateEncoder)
     cur.close()
     conn.close()
     return (index_json)
+
+
+def get_index_lastdate():
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor()
+    sql = 'select time from yangpusipiao order by time desc limit 1'
+    cur.execute(sql)
+    lastdate = cur.fetchall()
+    json_lastdate = {}
+    json_lastdate['lasttime'] = lastdate
+    json_lastdate = json.dumps(json_lastdate, cls=DateEncoder)
+    cur.close()
+    conn.close()
+    return (json_lastdate)
+
+
+def get_rank_now_data():
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    sql = '(select * from hongkou order by time desc limit 1 )' \
+          'union all (select * from jingan order by time desc limit 1 )' \
+          'union all (select * from pudongchuansha order by time desc limit 1)' \
+          'union all (select * from pudongxinqu order by time desc limit 1)' \
+          'union all (select * from pudongzhangjiang order by time desc limit 1)' \
+          'union all (select * from putuo order by time desc limit 1)' \
+          'union all (select * from qingpudianshanhu order by time desc limit 1)' \
+          'union all (select * from shiwuchang order by time desc limit 1)' \
+          'union all (select * from xuhuishangshida order by time desc limit 1)' \
+          'union all (select * from yangpusipiao order by time desc limit 1)' \
+          'order by aqi'
+    cur.execute(sql)
+    rankdata = cur.fetchall()
+
+    json_rankdata = {}
+    # geo = (
+    #      'hongkou','jingan', 'pudongchuansha', 'pudongxinqu', 'pudongzhangjiang', 'putuo', 'qingpudianshanhu',
+    #     'shiwuchang',
+    #     'xuhuishangshida', 'yangpusipiao')
+    # for x, v in zip(geo, rankdata):
+    #     json_rankdata[x] = v
+
+    json_rankdata = json.dumps(rankdata, cls=DateEncoder)
+    cur.close()
+    conn.close()
+    return (json_rankdata)
+
+
+def get_rank_history_data(start_time, order):
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    order_sql = 'aqi'
+    if order == 'order':
+        pass
+    elif order == 'reverse':
+        order_sql = 'aqi desc'
+
+    sql = '(select * from hongkou WHERE time = %s )' \
+          'union all (select * from jingan WHERE time = %s )' \
+          'union all (select * from pudongchuansha WHERE time = %s)' \
+          'union all (select * from pudongxinqu WHERE time = %s)' \
+          'union all (select * from pudongzhangjiang WHERE time = %s)' \
+          'union all (select * from putuo WHERE time = %s)' \
+          'union all (select * from qingpudianshanhu WHERE time = %s)' \
+          'union all (select * from shiwuchang WHERE time = %s)' \
+          'union all (select * from xuhuishangshida WHERE time = %s)' \
+          'union all (select * from yangpusipiao WHERE time = %s)' \
+          'order by ' + order_sql
+
+    cur.execute(sql, (
+        start_time, start_time, start_time, start_time, start_time, start_time, start_time, start_time, start_time,
+        start_time))
+    rankdata = cur.fetchall()
+    json_rankdata = json.dumps(rankdata, cls=DateEncoder)
+    cur.close()
+    conn.close()
+    return (json_rankdata)
+
+
+def get_export_data(start_time, end_time, geopoint):
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    start_time = start_time.strftime( "%Y-%m-%d %H:%M:%S")
+    end_time = end_time.strftime( "%Y-%m-%d %H:%M:%S")
+
+    sql = 'SELECT * FROM '+ geopoint + ' WHERE time BETWEEN ' +'\''+start_time+'\''+' AND '+'\''+end_time+'\''
+    df = pd.read_sql(sql, con=conn)
+    csv_name = 'export/'+ geopoint+'-'+start_time.replace(' ','-').replace(':','-')+'-'+end_time.replace(' ','-').replace(':','-') +'.csv'
+    df.to_csv(csv_name)
+    conn.close()
+    return json.dumps(csv_name.replace('export/',''), cls=DateEncoder)
+
 
 
 

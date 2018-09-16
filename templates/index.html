@@ -5,6 +5,7 @@
     <script src="https://cache.amap.com/lbs/static/es5.min.js"></script>
     <script src="https://webapi.amap.com/maps?v=1.4.9&key=3adb6c5c66ddc30796733f6dcfe5ff71"></script>
     <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <script src="https://webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
 
 {% endblock %}
 
@@ -32,6 +33,22 @@
 
         window.onload = function () {
             getTime();
+            $.ajax({
+                url: '/lastdate',
+                data: {},
+                type: 'GET',
+                async: true,
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    var lasttime = document.getElementById("LastTime");
+                    lasttime.innerText = "上次数据更新时间：【"+JSON.stringify(data.lasttime[0][0]).replace(/\"/g,"")+"】";
+                }, error: function (msg) {
+                    console.log(msg);
+                    alert('Error!');
+                }
+            })
+
 
         }
 
@@ -43,7 +60,7 @@
 
     <div class="breadcrumb row col-md-11 col-md-offset-1 " style="text-align:center;">
 
-        <span id="NowTime" style="font-size:17px"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size:17px">上次数据更新时间：【2018-4-30 23:00】</span>
+        <span id="NowTime" style="font-size:17px"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id = "LastTime"style="font-size:17px"></span>
 
 
     </div>
@@ -87,7 +104,7 @@
             <optgroup label="(优、良、轻度污染、中毒污染、重度污染、严重)">
                 <option value="level">空气质量等级</option>
             </optgroup>
-            <optgroup label="(细颗粒物PM2.5、颗粒物PM10、细颗粒物PM2.5&颗粒物PM10)">
+            <optgroup label="(细颗粒物PM2.5、颗粒物PM10、二氧化硫、一氧化碳、二氧化氮等)">
                 <option value="primarypollutant">首要污染物</option>
             </optgroup>
 
@@ -136,6 +153,7 @@
 
         $(function () {
             $("#request_button .btn").click(function () {
+
                 var request_data = {};
                 request_data['start'] = $('.form_datetime_start').data("datetimepicker").getDate();
                 request_data['pollution'] = $('#polpicker').val();
@@ -457,6 +475,27 @@
             zoom: 11,
             center: [121.47, 31.23]
         });
+
+        AMapUI.loadUI(['control/BasicControl'], function (BasicControl) {
+
+            //添加一个缩放控件
+            map.addControl(new BasicControl.Zoom({
+                position: 'lt'
+            }));
+
+            //缩放控件，显示Zoom值
+            map.addControl(new BasicControl.Zoom({
+                position: 'lb',
+                showZoomNum: true
+            }));
+
+            //图层切换控件
+            map.addControl(new BasicControl.LayerSwitcher({
+                position: 'rt'
+            }));
+        });
+
+
         // 静安
         var marker_jingan = new AMap.Marker({
             position: new AMap.LngLat(121.436183, 31.230475),   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
@@ -475,7 +514,7 @@
 
         // 虹口
         var marker_hongkou = new AMap.Marker({
-            position: new AMap.LngLat(121.484901, 31.280611),
+            position: new AMap.LngLat(121.484901,31.280611),
             title: '虹口',
             icon: "static/images/good.png"
         });
@@ -533,7 +572,7 @@
         marker_putuo.setTitle('普陀观测站');
         marker_putuo.setLabel({
             offset: new AMap.Pixel(-20, -15),
-            content:'轻度污染'
+            content: '轻度污染'
         });
 
         // 青浦淀山湖
