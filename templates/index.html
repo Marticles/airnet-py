@@ -58,13 +58,13 @@
 
 
 
-    <div class="breadcrumb row col-md-11 col-md-offset-1 " style="text-align:center;">
+    <div class="breadcrumb row col-md-12 " style="text-align:center;">
 
-        <span id="NowTime" style="font-size:17px"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="LastTime"
-                                                                                             style="font-size:17px"></span>
+        <span id="NowTime" style="font-size:17px"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="LastTime"style="font-size:17px"></span>
 
 
     </div>
+
 
     <!--选择时间-->
     <div class="col-md-2 col-md-offset-4">
@@ -79,7 +79,7 @@
         </div>
     </div>
     <div class="col-sm-2">
-        <select class="selectpicker " id="polpicker" title="选择污染物(默认AQI)">
+        <select class="selectpicker " id="polpicker" title="选择污染物(默认空气质量等级)">
             <optgroup label="AQI/每小时平均">
                 <option value="aqi">AQI</option>
             </optgroup>
@@ -112,6 +112,7 @@
         </select>
 
     </div>
+
     <div id="request_button">
         <button type="submit" class="btn btn-success">确认</button>
     </div>
@@ -467,10 +468,10 @@
 
 
     <br>
-    <div id="mapcontainer" style="width:1200px; height:800px;margin:0 auto;">
+
+    <div id="mapcontainer" style="width:1400px; height:600px;margin:0 auto;">
 
     </div>
-
     <script>
 
 

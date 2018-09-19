@@ -6,7 +6,7 @@
             <ol class="breadcrumb">
                 <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"> 主页</span></a></li>
                 <li class="active " id="indextitle">
-                    饼图
+                    南丁格尔玫瑰图
                 </li>
             </ol>
         </div>
@@ -118,7 +118,7 @@
     </script>
     <script>
         var obj = document.getElementById('indextitle');
-        obj.innerText = "饼图"
+        obj.innerText = "南丁格尔玫瑰图"
 
 
         $(function () {
@@ -129,7 +129,7 @@
                 request_data['pollution'] = $('#polpicker').val();
                 request_data['geopoint'] = $('#geopicker').val();
                 $.ajax({
-                    url: '/airdata',
+                    url: '/vizdata',
                     type: 'POST',
                     dataType: 'json',
                     data: JSON.stringify(request_data),  //转为字符串
@@ -348,7 +348,7 @@
             request_data['pollution'] = 'level'
             request_data['geopoint'] = 'yangpusipiao'
             $.ajax({
-                url: '/airdata',
+                url: '/vizdata',
                 type: 'POST',
                 dataType: 'json',
                 data: JSON.stringify(request_data),  //转为字符串

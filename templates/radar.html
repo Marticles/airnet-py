@@ -129,7 +129,7 @@
                 request_data['pollution'] = $('#polpicker').val();
                 request_data['geopoint'] = $('#geopicker').val();
                 $.ajax({
-                    url: '/airdata',
+                    url: '/vizdata',
                     type: 'POST',
                     dataType: 'json',
                     data: JSON.stringify(request_data),  //转为字符串
@@ -383,7 +383,7 @@
             request_data['pollution'] = 'level'
             request_data['geopoint'] = 'yangpusipiao'
             $.ajax({
-                url: '/airdata',
+                url: '/vizdata',
                 type: 'POST',
                 dataType: 'json',
                 data: JSON.stringify(request_data),  //转为字符串

@@ -234,7 +234,7 @@ def get_downloadinfo():
     json_downloadinfo = json.dumps(downloadinfo, cls=DateEncoder)
     cur.close()
     conn.close()
-    return (json_downloadinfo)
+    return json_downloadinfo
 
 
 def get_alarminfo(jsonify):
@@ -264,6 +264,55 @@ def check_alarm(site, pollution, value):
         return {"state": True, "db_value": check_info[0][1], "db_time": check_info[0][0]}
     elif (int(check_info[0][1]) < value):
         return {"state": False, "db_value": check_info[0][1], "db_time": check_info[0][0]}
+
+
+def get_api_history(site, pollution, start_time, end_time):
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    if (pollution == 'all'):
+        sql = 'select * from ' + site + ' where time between ' + '\'' + start_time + '\'' + ' and ' + '\'' + end_time + '\''
+    else :
+        sql = 'select time, ' + pollution + ' from ' + site + ' where time between ' + '\'' + start_time + '\'' + ' and ' + '\'' + end_time + '\''
+    cur.execute(sql)
+    api_history_info = cur.fetchall()
+    json_api_history_info = {}
+    json_api_history_info['request_site']= site
+    json_api_history_info['data'] = api_history_info
+    cur.close()
+    conn.close()
+    return json.dumps(json_api_history_info, cls=DateEncoder)
+
+def get_api_forecast(site, pollution, start_time, end_time):
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    if (pollution == 'all'):
+        sql = 'select * from ' + site +'_forecast'+ ' where time between ' + '\'' + start_time + '\'' + ' and ' + '\'' + end_time + '\''
+    else :
+        sql = 'select time, ' + pollution + ' from ' + site +'_forecast'+ ' where time between ' + '\'' + start_time + '\'' + ' and ' + '\'' + end_time + '\''
+    cur.execute(sql)
+    api_forecast_info = cur.fetchall()
+    json_api_forecast_info = {}
+    json_api_forecast_info['request_site'] = site
+    json_api_forecast_info['data'] = api_forecast_info
+    cur.close()
+    conn.close()
+    return json.dumps(json_api_forecast_info, cls=DateEncoder)
+
+def get_api_lastest(site, pollution):
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    if (pollution == 'all'):
+        sql = 'select * from ' + site + ' order by time desc limit 1'
+    else :
+        sql = 'select time, ' + pollution + ' from ' + site + ' order by time desc limit 1'
+    cur.execute(sql)
+    api_lastest_info = cur.fetchall()
+    json_api_lastest_info = {}
+    json_api_lastest_info['request_site'] = site
+    json_api_lastest_info['data'] = api_lastest_info
+    cur.close()
+    conn.close()
+    return json.dumps(json_api_lastest_info, cls=DateEncoder)
 
 
 def datatime_converter(object):
