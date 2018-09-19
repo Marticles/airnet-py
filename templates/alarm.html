@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="row col-md-11 col-md-offset-1">
+        <div class="col-md-11 ">
+            <ol class="breadcrumb">
+                <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"> 主页</span></a></li>
+                <li class="active" id="indextitle">污染物预警</li>
+            </ol>
+        </div>
+    </div>
+
+    </div>
+    <div class="col-md-2 col-md-offset-2">
+        <select class="selectpicker " id="geopicker" title="选择监测站(默认上海杨浦)">
+            <optgroup label="静安">
+                <option value="jingan">静安监测站</option>
+            </optgroup>
+            <optgroup label="虹口">
+                <option value="hongkou">虹口监测站</option>
+            </optgroup>
+            <optgroup label="浦东">
+                <option value="pudongchuansha">浦东川沙监测站</option>
+                <option value="pudongxinqu">浦东新区监测站</option>
+                <option value="pudongzhangjiang">浦东张江监测站</option>
+            </optgroup>
+            <optgroup label="普陀">
+                <option value="putuo">普陀监测站</option>
+            </optgroup>
+            <optgroup label="黄埔">
+                <option value="shiwuchang">十五厂(卢湾师专附小)监测站</option>
+            </optgroup>
+            <optgroup label="杨浦">
+                <option value="yangpusipiao">杨浦四漂监测站</option>
+            </optgroup>
+            <optgroup label="徐汇">
+                <option value="xuhuishangshida">徐汇上师大监测站</option>
+            </optgroup>
+            <optgroup label="青浦">
+                <option value="qingpudianshanhu">青浦淀山湖监测站</option>
+            </optgroup>
+
+        </select>
+    </div>
+
+    <div class="col-sm-2">
+        <select class="selectpicker " id="polpicker" title="选择污染物(默认PM2.5)">
+            <optgroup label="AQI/每小时平均">
+                <option value="aqi">AQI</option>
+            </optgroup>
+            <optgroup label="PM2.5/每小时平均">
+                <option value="pm25">PM2.5</option>
+            </optgroup>
+            <optgroup label="PM10/每小时平均">
+                <option value="pm10">PM10</option>
+            </optgroup>
+            <optgroup label="SO2/每小时平均">
+                <option value="so2">SO2</option>
+            </optgroup>
+            <optgroup label="NO2/每小时平均">
+                <option value="no2">NO2</option>
+            </optgroup>
+            <optgroup label="CO/每小时平均">
+                <option value="co">CO</option>
+            </optgroup>
+            <optgroup label="O3/每小时平均/八小时平均">
+                <option value="ozone1hour">O3</option>
+                <option value="ozone8hour">O3/8h</option>
+            </optgroup>
+
+
+        </select>
+    </div>
+
+
+
+    <div class="form-group col-sm-1">
+
+        <input type="text" class="form-control" id="InputValue" placeholder="预警阈值">
+    </div>
+
+    <div class="form-group col-sm-2">
+        <input type="email" class="form-control" id="InputEmail" placeholder="预警邮箱地址">
+
+    </div>
+
+
+    <div>
+        <button id="request_button" class="btn btn-success">确认</button>
+    </div>
+
+    <div class="row col-md-8 col-md-offset-2" style="margin-top:20px;">
+        <table id="tb" class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th style="text-align:center;">操作日期</th>
+                <th style="text-align:center;">监控城市/地点</th>
+                <th style="text-align:center;">监控污染物</th>
+                <th style="text-align:center;">污染物阈值</th>
+                <th style="text-align:center;">预警发送邮箱</th>
+                <th style="text-align:center;">停止预警</th>
+
+            </tr>
+            </thead>
+
+
+        </table>
+    </div>
+
+    <script>
+        $(function () {
+            $("#request_button").click(function () {
+                var request_data = {};
+                request_data['pollution'] = $('#polpicker').val();
+                request_data['geopoint'] = $('#geopicker').val();
+                request_data['value'] = $('#InputValue').val()
+                request_data['email'] = $('#InputEmail').val()
+                console.log(request_data);
+
+                $.ajax({
+                    url: '/addalarm',
+                    type: 'POST',
+                    async: false,
+                    dataType: 'json',
+                    data: JSON.stringify(request_data),
+                    contentType: 'application/json; charset=UTF-8',
+                    success: function (data) {
+                        window.location.reload();
+                        console.log(data);
+
+
+                    },
+                    error: function (msg) {
+                        console.log(msg);
+                        alert('Error!');
+                    }
+
+
+                });
+
+            })
+        })
+
+        $(function () {
+            $.ajax({
+                url: '/alarminfo',
+                data: {},
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                success: function (json) {
+                    // console.log(json);
+                    $('#tb tr:gt(0)').remove();
+                    var tabledata = '';
+                    for (var i = 0; i < json.length; i++) {
+                        pollution = json[i].pollution;
+                        site = json[i].site;
+                        if (site=='jingan'){
+                            site = '静安监测站'
+                        }
+                        else if (site=='hongkou'){
+                            site = '虹口'
+                        }
+                        else if (site=='pudongchuansha'){
+                            site = '浦东川沙'
+                        }
+                        else if (site=='pudongxinqu'){
+                            site = '浦东新区'
+                        }
+                        else if (site=='pudongzhangjiang'){
+                            site = '浦东张江'
+                        }
+                        else if (site=='putuo'){
+                            site = '普陀'
+                        }
+                        else if (site=='qingpudianshanhu'){
+                            site = '青浦淀山湖'
+                        }
+                        else if (site=='shiwuchang'){
+                            site = '十五厂'
+                        }
+                        else if (site=='xuhuishangshida'){
+                            site = '徐汇上师大'
+                        }
+                        else if (site=='yangpusipiao'){
+                            site = '杨浦四漂'
+                        }
+                        if (pollution == 'aqi') {
+                            pollution = 'AQI'
+                        }
+                        else if (pollution == 'pm25') {
+                            pollution = 'PM2.5'
+                        }
+                        else if (pollution == 'pm10') {
+                            pollution = 'PM10'
+                        }
+                        else if (pollution == 'so2') {
+                            pollution = 'SO2'
+                        }
+                        else if (pollution == 'no2') {
+                            pollution = 'NO2'
+                        }
+                        else if (pollution == 'so2') {
+                            pollution = 'SO2'
+                        }
+                        else if (pollution == 'co') {
+                            pollution = 'CO'
+                        }
+                        else if (pollution == 'ozone1hour') {
+                            pollution = 'O3/1h'
+                        }
+                        else if (pollution == 'ozone8hour') {
+                            pollution = 'O3/8h'
+                        }
+
+                        tabledata += '<tr><td>' + json[i].time + '</td><td>' + site
+                            + '</td><td>' + pollution + '</td><td>'
+                            + json[i].value + '</td><td>' + json[i].email
+                            + '</td><td>' + '<button id="del_button' + (i + 1) + '" class = "btn btn-danger btn-xs  " value="' + json[i].time + '"' + '>确认停止</button>' + '</td></tr>';
+                    }
+
+                    $('#tb').append('<tbody style="text-align:center;">' + tabledata + '</tbody>');
+
+                }, error: function (msg) {
+                    console.log(msg);
+                    alert('Error!');
+                }
+            })
+        })
+
+        $(function () {
+            $("#tb").on('click', "button[id^='del_button']", function () {
+                index_time=this.value;
+                $.ajax({
+                    url: '/delalarm',
+                    type: 'POST',
+                    async: false,
+                    dataType: 'json',
+                    data: JSON.stringify(index_time),
+                    contentType: 'application/json; charset=UTF-8',
+                    success: function (data) {
+                        window.location.reload();
+                    },
+                    error: function (msg) {
+                        console.log(msg);
+                        alert('Error!');
+                    }
+
+
+                });
+
+            });
+        });
+
+
+    </script>
+
+
+
+{% endblock %}

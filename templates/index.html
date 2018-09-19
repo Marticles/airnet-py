@@ -42,7 +42,7 @@
                 success: function (data) {
                     console.log(data);
                     var lasttime = document.getElementById("LastTime");
-                    lasttime.innerText = "上次数据更新时间：【"+JSON.stringify(data.lasttime[0][0]).replace(/\"/g,"")+"】";
+                    lasttime.innerText = "上次数据更新时间：【" + JSON.stringify(data.lasttime[0][0]).replace(/\"/g, "") + "】";
                 }, error: function (msg) {
                     console.log(msg);
                     alert('Error!');
@@ -60,7 +60,8 @@
 
     <div class="breadcrumb row col-md-11 col-md-offset-1 " style="text-align:center;">
 
-        <span id="NowTime" style="font-size:17px"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id = "LastTime"style="font-size:17px"></span>
+        <span id="NowTime" style="font-size:17px"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="LastTime"
+                                                                                             style="font-size:17px"></span>
 
 
     </div>
@@ -166,28 +167,31 @@
                     data: JSON.stringify(request_data),
                     contentType: 'application/json; charset=UTF-8',
                     success: function (data) {
-                        console.log(data);
-                        app.jingan_aqi = data.jingan[1];
-
-                        app.jingan_pollution = data.jingan[2];
-                        app.hongkou_aqi = data.hongkou[1];
-                        app.hongkou_pollution = data.hongkou[2];
-                        app.pudongchuansha_aqi = data.pudongchuansha[1];
-                        app.pudongchuansha_pollution = data.pudongchuansha[2];
-                        app.pudongxinqu_aqi = data.pudongxinqu[1];
-                        app.pudongxinqu_pollution = data.pudongxinqu[2];
-                        app.pudongzhangjiang_aqi = data.pudongzhangjiang[1];
-                        app.pudongzhangjiang_pollution = data.pudongzhangjiang[2];
-                        app.putuo_aqi = data.putuo[1];
-                        app.putuo_pollution = data.putuo[2];
-                        app.qingpudianshanhu_aqi = data.qingpudianshanhu[1];
-                        app.qingpudianshanhu_pollution = data.qingpudianshanhu[2];
-                        app.shiwuchang_aqi = data.shiwuchang[1];
-                        app.shiwuchang_pollution = data.shiwuchang[2];
-                        app.xuhuishangshida_aqi = data.xuhuishangshida[1];
-                        app.xuhuishangshida_pollution = data.xuhuishangshida[2];
-                        app.yangpusipiao_aqi = data.yangpusipiao[1];
-                        app.yangpusipiao_pollution = data.yangpusipiao[2];
+                        try {
+                            app.jingan_aqi = data.jingan[1];
+                            app.jingan_pollution = data.jingan[2];
+                            app.hongkou_aqi = data.hongkou[1];
+                            app.hongkou_pollution = data.hongkou[2];
+                            app.pudongchuansha_aqi = data.pudongchuansha[1];
+                            app.pudongchuansha_pollution = data.pudongchuansha[2];
+                            app.pudongxinqu_aqi = data.pudongxinqu[1];
+                            app.pudongxinqu_pollution = data.pudongxinqu[2];
+                            app.pudongzhangjiang_aqi = data.pudongzhangjiang[1];
+                            app.pudongzhangjiang_pollution = data.pudongzhangjiang[2];
+                            app.putuo_aqi = data.putuo[1];
+                            app.putuo_pollution = data.putuo[2];
+                            app.qingpudianshanhu_aqi = data.qingpudianshanhu[1];
+                            app.qingpudianshanhu_pollution = data.qingpudianshanhu[2];
+                            app.shiwuchang_aqi = data.shiwuchang[1];
+                            app.shiwuchang_pollution = data.shiwuchang[2];
+                            app.xuhuishangshida_aqi = data.xuhuishangshida[1];
+                            app.xuhuishangshida_pollution = data.xuhuishangshida[2];
+                            app.yangpusipiao_aqi = data.yangpusipiao[1];
+                            app.yangpusipiao_pollution = data.yangpusipiao[2];
+                        }
+                        catch (e) {
+                            console.log(e.name + ": " + e.message);
+                        }
 
 
                     },
@@ -503,7 +507,7 @@
             icon: "static/images/pollution2.png"
         });
         // 设置鼠标划过点标记显示的文字提示
-        marker_jingan.setTitle('静安观测站');
+        marker_jingan.setTitle('静安监测站');
 
         // 设置label标签
         marker_jingan.setLabel({//label默认蓝框白底左上角显示，样式className为：amap-marker-label
@@ -514,11 +518,11 @@
 
         // 虹口
         var marker_hongkou = new AMap.Marker({
-            position: new AMap.LngLat(121.484901,31.280611),
+            position: new AMap.LngLat(121.484901, 31.280611),
             title: '虹口',
             icon: "static/images/good.png"
         });
-        marker_hongkou.setTitle('虹口观测站');
+        marker_hongkou.setTitle('虹口监测站');
         marker_hongkou.setLabel({
             offset: new AMap.Pixel(-20, -15),
             content: '良'
@@ -531,7 +535,7 @@
             icon: "static/images/excellent.png"
 
         });
-        marker_pdchuansha.setTitle('浦东川沙观测站');
+        marker_pdchuansha.setTitle('浦东川沙监测站');
         marker_pdchuansha.setLabel({
             offset: new AMap.Pixel(-20, -15),
             content: '优'
@@ -544,7 +548,7 @@
             icon: "static/images/good.png"
 
         });
-        marker_pdxinqu.setTitle('浦东新区观测站');
+        marker_pdxinqu.setTitle('浦东新区监测站');
         marker_pdxinqu.setLabel({
             offset: new AMap.Pixel(-20, -15),
             content: '良'
@@ -557,7 +561,7 @@
             icon: "static/images/pollution1.png"
 
         });
-        marker_pdzhangjiang.setTitle('浦东张江观测站');
+        marker_pdzhangjiang.setTitle('浦东张江监测站');
         marker_pdzhangjiang.setLabel({
             offset: new AMap.Pixel(-20, -15),
             content: '轻度污染'
@@ -569,7 +573,7 @@
             title: '普陀',
             icon: "static/images/pollution1.png"
         });
-        marker_putuo.setTitle('普陀观测站');
+        marker_putuo.setTitle('普陀监测站');
         marker_putuo.setLabel({
             offset: new AMap.Pixel(-20, -15),
             content: '轻度污染'
@@ -581,7 +585,7 @@
             title: '青浦淀山湖',
             icon: "static/images/pollution1.png"
         });
-        marker_qingpu.setTitle('青浦淀山湖观测站');
+        marker_qingpu.setTitle('青浦淀山湖监测站');
         marker_qingpu.setLabel({
             offset: new AMap.Pixel(-20, -15),
             content: '轻度污染'
@@ -593,7 +597,7 @@
             title: '十五厂',
             icon: "static/images/good.png"
         });
-        marker_shiwuchang.setTitle('十五厂(卢湾师专附小)观测站');
+        marker_shiwuchang.setTitle('十五厂(卢湾师专附小)监测站');
         marker_shiwuchang.setLabel({
             offset: new AMap.Pixel(-20, -15),
             content: '良'
@@ -605,7 +609,7 @@
             title: '徐汇上师大',
             icon: "static/images/good.png"
         });
-        marker_xuhui.setTitle('徐汇上师大观测站');
+        marker_xuhui.setTitle('徐汇上师大监测站');
         marker_xuhui.setLabel({
             offset: new AMap.Pixel(-20, -15),
             content: '良'
@@ -617,7 +621,7 @@
             title: '杨浦四漂',
             icon: "static/images/good.png"
         });
-        marker_yangpu.setTitle('杨浦四漂观测站');
+        marker_yangpu.setTitle('杨浦四漂监测站');
         marker_yangpu.setLabel({
             offset: new AMap.Pixel(-20, -15),
             content: '良'

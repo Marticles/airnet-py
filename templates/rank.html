@@ -7,7 +7,7 @@
         <div class="col-md-11 ">
             <ol class="breadcrumb">
                 <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"> 主页</span></a></li>
-                <li class="active" id="indextitle">实时&历史排行</li>
+                <li class="active" id="indextitle">空气质量排行</li>
             </ol>
         </div>
     </div>
@@ -117,12 +117,12 @@
                         if (json[i].aqi > 300) {
                             color = '<td bgcolor="#EE3B3B" >' + json[i].level + '</td>';
                         }
-                        tabledata += '<tbody style="text-align:center;"><tr><td>' + (i + 1) + '</td><td>' + json[i].time + '</td><td>' + json[i].site + '</td><td>' + json[i].aqi + '</td>';
+                        tabledata += '<tr><td>' + (i + 1) + '</td><td>' + json[i].time + '</td><td>' + json[i].site + '</td><td>' + json[i].aqi + '</td>';
                         tabledata += color;
-                        tabledata += '<td>' + json[i].primarypollutant + '</td><td>' + json[i].pm25 + '</td><td>' + json[i].pm10 + '</td><td>' + json[i].co + '</td><td>' + json[i].no2 + '</td><td>' + json[i].ozone1hour + '</td><td>' + json[i].ozone8hour + '</td><td>' + json[i].so2 + '</td></tr></tbody>';
+                        tabledata += '<td>' + json[i].primarypollutant + '</td><td>' + json[i].pm25 + '</td><td>' + json[i].pm10 + '</td><td>' + json[i].co + '</td><td>' + json[i].no2 + '</td><td>' + json[i].ozone1hour + '</td><td>' + json[i].ozone8hour + '</td><td>' + json[i].so2 + '</td></tr>';
                     }
 
-                    $('#tb').append(tabledata);
+                    $('#tb').append('<tbody style="text-align:center;">'+tabledata+'</tbody>');
 
                 }, error: function (msg) {
                     console.log(msg);
@@ -168,12 +168,12 @@
                         if (json[i].aqi > 300) {
                             color = '<td bgcolor="#EE3B3B" >' + json[i].level + '</td>';
                         }
-                        tabledata += '<tbody style="text-align:center;"><tr><td>' + (i + 1) + '</td><td>' + json[i].time + '</td><td>' + json[i].site + '</td><td>' + json[i].aqi + '</td>';
+                        tabledata += '<tr><td>' + (i + 1) + '</td><td>' + json[i].time + '</td><td>' + json[i].site + '</td><td>' + json[i].aqi + '</td>';
                         tabledata += color;
-                        tabledata += '<td>' + json[i].primarypollutant + '</td><td>' + json[i].pm25 + '</td><td>' + json[i].pm10 + '</td><td>' + json[i].co + '</td><td>' + json[i].no2 + '</td><td>' + json[i].ozone1hour + '</td><td>' + json[i].ozone8hour + '</td><td>' + json[i].so2 + '</td></tr></tbody>';
+                        tabledata += '<td>' + json[i].primarypollutant + '</td><td>' + json[i].pm25 + '</td><td>' + json[i].pm10 + '</td><td>' + json[i].co + '</td><td>' + json[i].no2 + '</td><td>' + json[i].ozone1hour + '</td><td>' + json[i].ozone8hour + '</td><td>' + json[i].so2 + '</td></tr>';
                     }
 
-                    $('#tb').append(tabledata);
+                    $('#tb').append('<tbody style="text-align:center;">'+tabledata+'</tbody>');
 
                 }, error: function (msg) {
                     console.log(msg);

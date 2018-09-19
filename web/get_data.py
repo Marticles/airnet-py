@@ -1,7 +1,6 @@
 import datetime
 import json
 
-
 import pandas as pd
 import pymysql
 
@@ -206,17 +205,65 @@ def get_rank_history_data(start_time, order):
 
 def get_export_data(start_time, end_time, geopoint):
     conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
-    start_time = start_time.strftime( "%Y-%m-%d %H:%M:%S")
-    end_time = end_time.strftime( "%Y-%m-%d %H:%M:%S")
-
-    sql = 'SELECT * FROM '+ geopoint + ' WHERE time BETWEEN ' +'\''+start_time+'\''+' AND '+'\''+end_time+'\''
+    start_time = start_time.strftime("%Y-%m-%d %H:%M:%S")
+    end_time = end_time.strftime("%Y-%m-%d %H:%M:%S")
+    nowtime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    sql = 'SELECT * FROM ' + geopoint + ' WHERE time BETWEEN ' + '\'' + start_time + '\'' + ' AND ' + '\'' + end_time + '\''
     df = pd.read_sql(sql, con=conn)
-    csv_name = 'export/'+ geopoint+'-'+start_time.replace(' ','-').replace(':','-')+'-'+end_time.replace(' ','-').replace(':','-') +'.csv'
+    csv_name = 'export/' + geopoint + '-' + start_time.replace(' ', '-').replace(':', '-') + '-' + end_time.replace(' ',
+                                                                                                                    '-').replace(
+        ':', '-') + '.csv'
     df.to_csv(csv_name)
+    new_csv_name = csv_name.replace('export/', '')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    insert_sql = 'INSERT INTO export VALUE (' + '\'' + nowtime + '\'' + ',' + '\'' + start_time + '\'' + ',' + '\'' + end_time + '\'' + ',' + '\'' + geopoint + '\'' + ', ' + '\'' + new_csv_name + '\'' + ')'
+    cur.execute(insert_sql)
+    conn.commit()
+    cur.close()
     conn.close()
-    return json.dumps(csv_name.replace('export/',''), cls=DateEncoder)
+
+    return json.dumps(new_csv_name, cls=DateEncoder)
 
 
+def get_downloadinfo():
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    sql = 'select * from export order by time desc;'
+    cur.execute(sql)
+    downloadinfo = cur.fetchall()
+    json_downloadinfo = json.dumps(downloadinfo, cls=DateEncoder)
+    cur.close()
+    conn.close()
+    return (json_downloadinfo)
+
+
+def get_alarminfo(jsonify):
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    sql = 'select * from alarm order by time desc;'
+    cur.execute(sql)
+    alarminfo = cur.fetchall()
+    json_alarminfo = json.dumps(alarminfo, cls=DateEncoder)
+    cur.close()
+    conn.close()
+    if jsonify == True:
+        return json_alarminfo
+    elif jsonify == False:
+        return alarminfo
+
+
+def check_alarm(site, pollution, value):
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor()
+
+    sql = 'select time,' + pollution + ' from ' + site + ' order by time desc limit 1;'
+
+    cur.execute(sql)
+    check_info = cur.fetchall()
+    if (int(check_info[0][1]) >= value):
+        return {"state": True, "db_value": check_info[0][1], "db_time": check_info[0][0]}
+    elif (int(check_info[0][1]) < value):
+        return {"state": False, "db_value": check_info[0][1], "db_time": check_info[0][0]}
 
 
 def datatime_converter(object):

@@ -74,11 +74,11 @@
                     </ul>
                 </li>
 
-                <li><a href="{{ url_for('rank') }}">实时&历史排行</a></li>
+                <li><a href="{{ url_for('rank') }}">空气质量排行</a></li>
                 <li><a href="#">PM2.5预测</a></li>
-                <li><a href="#">污染物预警</a></li>
+                <li><a href="{{ url_for('alarm') }}">污染物预警</a></li>
                 <li><a href="{{ url_for('export') }}">数据导出</a></li>
-                <li><a href="#">API说明</a></li>
+                <li><a href="{{ url_for('aboutapi') }}">API说明</a></li>
                 <li><a href="{{ url_for('info') }}">相关知识</a></li>
                 <li><a href="{{ url_for('about') }}">关于AirNet</a></li>
             </ul>

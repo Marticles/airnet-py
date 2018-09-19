@@ -1,10 +1,31 @@
 from flask import Flask, render_template,send_file, send_from_directory,make_response
-from web.get_data import get_air_data, get_index_data,get_index_lastdate,get_rank_now_data,get_rank_history_data,get_export_data
+from web.get_data import get_air_data, get_index_data,get_index_lastdate,\
+    get_rank_now_data,get_rank_history_data,get_export_data,get_downloadinfo,get_alarminfo
+from web.add_data import add_alarm
+from web.del_data import del_alarm
+from lib.email import send_async_email,send_email
 from flask import request
+from flask_apscheduler import APScheduler
 import datetime
 import os
 
+
+class Config(object):
+    JOBS = []
+
 app = Flask(__name__)
+app.config.from_object(Config())
+app.config.from_object('secure')
+scheduler = APScheduler();
+scheduler.init_app(app=app)
+scheduler.start()
+
+# scheduler.add_job(func=send_email, id='send_email', args=(), trigger='interval', seconds=60, replace_existing=True)
+
+@app.route('/test',methods=['GET'])
+def test():
+    return 0
+
 
 
 @app.route('/airdata', methods=['POST', 'GET'])
@@ -24,7 +45,7 @@ def get_data():
         end_time.replace(minute=0, second=0)
         pollution = request.get_json()['pollution']
         geopoint = request.get_json()['geopoint']
-        return (get_air_data(start_time, end_time, pollution, geopoint))
+        return get_air_data(start_time, end_time, pollution, geopoint)
 
 
 @app.route('/indexdata', methods=['POST'])
@@ -36,7 +57,7 @@ def get_indexdata():
         start_time += datetime.timedelta(hours=+8)
         start_time.replace(minute=0, second=0)
         pollution = request.get_json()['pollution']
-        return (get_index_data(start_time, pollution))
+        return get_index_data(start_time, pollution)
 
 
 @app.route('/lastdate', methods=['GET'])
@@ -47,7 +68,7 @@ def get_lastdate():
 @app.route('/ranknowdata', methods=['GET'])
 def get_ranknowdata():
     if request.method == 'GET':
-        return (get_rank_now_data())
+        return get_rank_now_data()
 
 @app.route('/rankhistorydata', methods=['POST'])
 def get_rankhistorydata():
@@ -58,7 +79,7 @@ def get_rankhistorydata():
         start_time += datetime.timedelta(hours=+8)
         start_time.replace(minute=0, second=0)
         order = request.get_json()['order']
-        return (get_rank_history_data(start_time,order))
+        return get_rank_history_data(start_time,order)
 
 @app.route('/exportdata', methods=['POST'])
 def get_exportdata():
@@ -74,7 +95,7 @@ def get_exportdata():
         end_time += datetime.timedelta(hours=+8)
         end_time.replace(minute=0, second=0)
         geopoint = request.get_json()['geopoint']
-        return (get_export_data(start_time,end_time,geopoint))
+        return get_export_data(start_time,end_time,geopoint)
 
 @app.route('/download/<filename>', methods=['GET'])
 def download(filename):
@@ -84,15 +105,38 @@ def download(filename):
         filename.encode('utf-8').decode('utf-8'))
     return response
 
+@app.route('/downloadinfo', methods=['GET'])
+def downloadinfo():
+    if request.method == 'GET':
+        return get_downloadinfo()
+
+@app.route('/alarminfo', methods=['GET'])
+def alarminfo():
+    if request.method == 'GET':
+        return get_alarminfo(True)
+
+@app.route('/addalarm', methods=['POST'])
+def addalarm():
+    if request.method == 'POST':
+        geopoint = request.get_json()['geopoint']
+        pollution = request.get_json()['pollution']
+        value = request.get_json()['value']
+        email = request.get_json()['email']
+        return add_alarm(geopoint,pollution,value,email)
+
+@app.route('/delalarm', methods=['POST'])
+def delalarm():
+    if request.method == 'POST':
+        index_time = request.get_json().replace("T", " ")
+        index_time = index_time.replace(".000Z", "")
+        index_time = datetime.datetime.strptime(index_time, "%Y-%m-%d %H:%M:%S")
+        index_time.replace(minute=0, second=0)
+        return del_alarm(index_time)
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
-@app.route('/test')
-def test():
-    return render_template('test.html')
 
 
 @app.route('/viz/line')
@@ -136,7 +180,15 @@ def rank():
 def export():
     return render_template('export.html')
 
-@app.route('/info')
+@app.route('/alarm')
+def alarm():
+    return render_template('alarm.html')
+
+@app.route('/aboutapi')
+def aboutapi():
+    return render_template('aboutapi.html')
+
+@app.route('/infoi')
 def info():
     return render_template('info.html')
 
