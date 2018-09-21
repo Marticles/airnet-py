@@ -30,7 +30,7 @@
                 request_data['geopoint'] = $('#geopicker').val();
                 // alert(request_data['pollution']);
                 $.ajax({
-                    url: '/airdata',
+                    url: '/vizdata',
                     type: 'POST',
                     dataType: 'json',
                     data: JSON.stringify(request_data),  //转为字符串
@@ -165,7 +165,7 @@
 
         function getData() {
             $.ajax({
-                url: '/airdata',
+                url: '/vizdata',
                 data: {},
                 type: 'GET',
                 async: true,

@@ -1,69 +1,70 @@
-![Image](img/logo.png)
 # AirNet
 [![Build Status](https://travis-ci.org/mtianyan/hexoBlog-Github.svg?branch=master)](https://travis-ci.org/mtianyan/hexoBlog-Github)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 ![](https://img.shields.io/badge/language-python-orange.svg)
+[![中文 README](https://img.shields.io/badge/Readme-中文-red.svg)](https://github.com/spencerwoo98/spencer-simple-desktop-api/blob/master/README-zh.md)
+![Image](img/logo.png)
+# What is AirNet?
 
-AirNet是一个提供环境污染物实时监测、预警、预测的数据平台，基于Flask与Tensorflow开发。
+AirNet is a data platform for real-time monitoring, visualization, early alert and forecasting of air pollution.
 
-# 功能
+We provides seven types of interactive charts. By building LSTM(Long Short-Term Memory) model based on seq2seq(sequence to sequence) architecture, we achieve short-term, medium term and long-term forecasting, from one day to one year.
 
-* [x] 可视化：提供基于地理位置的监测点污染物展示与7种污染物数据图表展示
-* [x] 空气质量排行：支持实时/历史排行
-* [ ] PM2.5预测：基于seq2seq架构，encoder与decoder都是lstm，提供时间跨度长达一年的未来PM2.5预测
-* [x] 污染物预警：设定监测点、监测污染物、预警阈值后当最新污染物数据超过阈值时，系统会自动发送预警邮件至用户设定邮箱内
-* [x] 数据导出：提供历史数据导出，导出文件格式为csv
-* [x] API：用户可通过调用API获得污染物历史数据、最新数据与PM2.5预测数据
+By using 'Air Pollution Alert' module, if the lastest air pollution over the limits you setted before, it will send a email to alert you.
 
-# 技术
+You can use API to get the history data, forecasting data and the lasetest data, or just directly export data to csv file.
 
-- 前端：Bootstrap+ECharts
-- 后端：Flask+Tensorflow
-- 数据库：MySQL
 
-# API说明
-API返回的数据包括了以下内容：
+# To-do list
+* [x] Visualization
+* [x] Air Quality Rank
+* [ ] PM2.5 Forecasting
+* [x] Air Pollution Alert
+* [x] Data Export
+* [x] API
 
-|字段|内容|
+# About API
+
+The API returns data include the following.
+
+|Field|Content|
 |-|-|
-|request_site|用户请求监测点|
-|data|返回数据|
-|time|污染物监测时间|
-|city|监测点所属城市|
-|site|监测点|
-|aqi|空气质量指数(AQI)，即air quality index，是定量描述空气质量状况的无纲量指数|
-|level|空气质量指数类别，有“优、良、轻度污染、中度污染、重度污染、严重污染”6类|
-|primarypollutan|首要污染物|
-|pm25|颗粒物（粒径小于等于2.5μm）1小时平均|
-|pm10|颗粒物（粒径小于等于10μm）1小时平均|
-|co|一氧化碳1小时平均|
-|no2|二氧化氮1小时平均|
-|ozone1hour|臭氧1小时平均|
-|ozone8hour|臭氧8小时平均|
-|so2|二氧化硫1小时平均|
+|request_site|User Request Site|
+|data|Return Data|
+|time|Air Pollution Monitor Time|
+|city|Monitoring Site’s City|
+|site|Monitoring Site|
+|aqi|Air Quality Index(AQI)|
+|level|The level of Air Quality Index|
+|pm25|Hourly Average of PM2.5|
+|pm10|Hourly Average of PM10|
+|co|Hourly Average of CO|
+|no2|Hourly Average of NO2|
+|ozone1hour|Hourly Average of Ozone|
+|ozone8hour|Eight Hours Average of Ozone|
+|so2|Hourly Average of SO2|
 
-URL及参数含义如下：
+The meaning of URL and parameters are as follows.
 
-|URL/参数|含义|
+|URL/Parameters|Content|
 |-|-|
-|site|监测点，为英文代码，如`jingan`、`hongkouu`|
-|pollution|污染物，如`so2`、`pm25`，当为`all`时将返回全部污染物数据|
-|start|开始时间，如`2018-01-01 01:00:00`，由于数据源每小时更新一次，输入的分钟部分将被忽略|
-|end|结束时间，如`2018-01-01 01:00:00`，由于数据源每小时更新一次，输入的分钟部分将被忽略|
+|site|Monitoring Site, e.g. `jingan`,`hongkouu`|
+|pollution|Air Pollution, e.g.`so2`,`pm25`, when this value equals`all`, API will return the whole data|
+|start|Start Time, e.g. `2018-01-01 01:00:00`, Because the data source is updated once hourly, the part of minutes will be ignore|
+|end|End Time, e.g. `2018-01-01 01:00:00`, Because the data source is updated once hourly, the part of minutes will be ignore|
 
-## 1. 请求历史数据
+## 1. Request History Data
 ### 1.1 URL
 ```
 api/history/site/pollution?start=start_time&end=end_time
 ```
-参数含义请参照上述说明
 
-### 1.2 示例
-#### 1.2.1 请求URL
+### 1.2 Example
+#### 1.2.1 Request URL
 ```
 api/history/jingan/so2?start=2018-02-10 10:00&end=2018-02-23 20:00
 ```
-#### 1.2.2 返回Json
+#### 1.2.2 Return Json
 ```
 {
     "request_site": "jingan",
@@ -85,19 +86,18 @@ api/history/jingan/so2?start=2018-02-10 10:00&end=2018-02-23 20:00
 }
 ```
 
-## 2. 请求最新数据
+## 2. Request The Lastest Data
 ### 2.1 URL
 ```
 api/lastest/site/pollution?start=start_time&end=end_time
 ```
-参数含义请参照上述说明
 
-### 2.2 示例
-#### 2.2.1 请求URL
+### 2.2 Example
+#### 2.2.1 Request URL
 ```
 api/lastest/yangpusipiao/all?start=2017-08-12 13:00&end=2017-10-02 10:00
 ```
-#### 2.2.2 返回Json
+#### 2.2.2 Return Json
 ```
 {
     "request_site": "yangpusipiao",
@@ -122,19 +122,19 @@ api/lastest/yangpusipiao/all?start=2017-08-12 13:00&end=2017-10-02 10:00
 ```
 
 
-# 展示
-## 主页
+# Screenshots
+## Home Page
 ![](img/index.png)
-## 图表
+## Charts
 ![](img/scatter.png)
 ![](img/line.png)
 ![](img/radar.png)
-## 空气质量排行
+## Air Quality Rank
 ![](img/rank.png)
-## 污染物预警
+## Air Pollution Alert
 ![](img/alarm.png)
 ![](img/email.png)
-## 数据导出
+## Data Export
 ![](img/export.png)
 
 
