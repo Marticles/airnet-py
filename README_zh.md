@@ -1,8 +1,8 @@
 ![Image](img/logo.png)
 # AirNet
-[![Build Status](https://travis-ci.org/mtianyan/hexoBlog-Github.svg?branch=master)](https://travis-ci.org/mtianyan/hexoBlog-Github)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 ![](https://img.shields.io/badge/language-python-orange.svg)
+[![English README](https://img.shields.io/badge/Readme-English-red.svg)](https://github.com/Marticles/AirNet/blob/master/README.md)
 
 AirNet是一个提供环境污染物实时监测、预警、预测的数据平台，基于Flask与Tensorflow开发。
 

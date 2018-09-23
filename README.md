@@ -1,8 +1,7 @@
 # AirNet
-[![Build Status](https://travis-ci.org/mtianyan/hexoBlog-Github.svg?branch=master)](https://travis-ci.org/mtianyan/hexoBlog-Github)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 ![](https://img.shields.io/badge/language-python-orange.svg)
-[![中文 README](https://img.shields.io/badge/Readme-中文-red.svg)](https://github.com/spencerwoo98/spencer-simple-desktop-api/blob/master/README-zh.md)
+[![中文 README](https://img.shields.io/badge/Readme-中文-red.svg)](https://github.com/Marticles/AirNet/blob/master/README_zh.md)
 ![Image](img/logo.png)
 # What is AirNet?
 
@@ -15,7 +14,8 @@ By using 'Air Pollution Alert' module, if the lastest air pollution over the lim
 You can use API to get the history data, forecasting data and the lasetest data, or just directly export data to csv file.
 
 
-# To-do list
+# To-do List
+* [ ] Crawler
 * [x] Visualization
 * [x] Air Quality Rank
 * [ ] PM2.5 Forecasting
