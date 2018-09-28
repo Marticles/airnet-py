@@ -50,8 +50,8 @@ The meaning of URL and parameters are as follows.
 |-|-|
 |site|Monitoring Site, e.g. `jingan`,`hongkouu`|
 |pollution|Air Pollution, e.g.`so2`,`pm25`, when this value equals`all`, API will return the whole data|
-|start|Start Time, e.g. `2018-01-01 01:00:00`, Because the data source is updated once hourly, the part of minutes will be ignore|
-|end|End Time, e.g. `2018-01-01 01:00:00`, Because the data source is updated once hourly, the part of minutes will be ignore|
+|start|Start Time, e.g. `2018-01-01 01:00:00`, because the data source is updated once hourly, the part of minutes will be ignored|
+|end|End Time, e.g. `2018-01-01 01:00:00`, because the data source is updated once hourly, the part of minutes will be ignored|
 
 ## 1. Request History Data
 ### 1.1 URL
@@ -125,7 +125,7 @@ api/lastest/yangpusipiao/all?start=2017-08-12 13:00&end=2017-10-02 10:00
 # Screenshots
 ## Home Page
 ![](img/index.png)
-## Charts
+## Part of Charts
 ![](img/scatter.png)
 ![](img/line.png)
 ![](img/radar.png)

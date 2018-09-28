@@ -1,25 +1,20 @@
-![Image](img/logo.png)
 # AirNet
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 ![](https://img.shields.io/badge/language-python-orange.svg)
 [![English README](https://img.shields.io/badge/Readme-English-red.svg)](https://github.com/Marticles/AirNet/blob/master/README.md)
+![Image](img/logo.png)
 
+# 关于AirNet
 AirNet是一个提供环境污染物实时监测、预警、预测的数据平台，基于Flask与Tensorflow开发。
 
 # 功能
-
+* [x] 实时爬虫
 * [x] 可视化：提供基于地理位置的监测点污染物展示与7种污染物数据图表展示
 * [x] 空气质量排行：支持实时与历史排行
 * [ ] PM2.5预测：基于seq2seq架构，encoder与decoder都是lstm，提供时间跨度长达一年的未来PM2.5预测
 * [x] 污染物预警：设定监测点、监测污染物、预警阈值后当污染物超过阈值时，系统将自动发送预警邮件至设定邮箱内
 * [x] 数据导出：提供历史数据导出，导出文件格式为csv
 * [x] API：用户可通过调用API获得污染物历史数据、最新数据与PM2.5预测数据
-
-# 技术
-
-- 前端：Bootstrap+ECharts
-- 后端：Flask+Tensorflow
-- 数据库：MySQL
 
 # API说明
 API返回的数据包括了以下内容：
@@ -122,10 +117,10 @@ api/lastest/yangpusipiao/all?start=2017-08-12 13:00&end=2017-10-02 10:00
 ```
 
 
-# 展示
+# 截图
 ## 主页
 ![](img/index.png)
-## 图表
+## 部分图表
 ![](img/scatter.png)
 ![](img/line.png)
 ![](img/radar.png)
