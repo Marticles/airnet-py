@@ -1,7 +1,7 @@
 import datetime
 import json
 import pymysql
-from lib.data_to_json import DateEncoder
+from libs.data_to_json import DateEncoder
 
 def del_alarm(index_time):
     conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')

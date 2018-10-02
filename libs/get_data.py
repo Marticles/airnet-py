@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import pymysql
 
-from lib.data_to_json import DateEncoder
+from libs.data_to_json import DateEncoder
 
 
 def get_air_data(start_time='2018-04-21 01:00:00', end_time='2018-04-25 02:00:00', pollution='pm25',
@@ -255,14 +255,12 @@ def get_alarminfo(jsonify):
 def check_alarm(site, pollution, value):
     conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
     cur = conn.cursor()
-
     sql = 'select time,' + pollution + ' from ' + site + ' order by time desc limit 1;'
-
     cur.execute(sql)
     check_info = cur.fetchall()
-    if (int(check_info[0][1]) >= value):
+    if (float(check_info[0][1]) >= float(value)):
         return {"state": True, "db_value": check_info[0][1], "db_time": check_info[0][0]}
-    elif (int(check_info[0][1]) < value):
+    elif (float(check_info[0][1]) < float(value)):
         return {"state": False, "db_value": check_info[0][1], "db_time": check_info[0][0]}
 
 

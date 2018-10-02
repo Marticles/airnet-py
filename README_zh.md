@@ -83,14 +83,14 @@ api/history/jingan/so2?start=2018-02-10 10:00&end=2018-02-23 20:00
 ## 2. 请求最新数据
 ### 2.1 URL
 ```
-api/lastest/site/pollution?start=start_time&end=end_time
+api/lastest/site/pollution
 ```
 参数含义请参照上述说明
 
 ### 2.2 示例
 #### 2.2.1 请求URL
 ```
-api/lastest/yangpusipiao/all?start=2017-08-12 13:00&end=2017-10-02 10:00
+api/lastest/yangpusipiao/all
 ```
 #### 2.2.2 返回Json
 ```
