@@ -8,7 +8,7 @@
 AirNet是一个提供环境污染物实时监测、预警、预测的数据平台，基于Flask与Tensorflow开发。
 
 # 功能
-* [x] 实时爬虫
+* [ ] 实时爬虫
 * [x] 可视化：提供基于地理位置的监测点污染物展示与7种污染物数据图表展示
 * [x] 空气质量排行：支持实时与历史排行
 * [x] PM2.5预测：基于seq2seq架构，encoder与decoder都是lstm，提供时间跨度长达一年的未来PM2.5预测
@@ -115,6 +115,39 @@ api/lastest/yangpusipiao/all
     ]
 }
 ```
+## 3. 请求预测数据
+### 3.1 URL
+```
+api/forecast/site?start=start_time&end=end_time
+```
+
+### 3.2 示例
+#### 3.2.1 请求 URL
+```
+api/forecast/jingan?start=2018-05-10 10:00&end=2018-05-23 20:00
+```
+#### 3.2.2 返回 Json
+```
+{
+    "request_site": "jingan",
+    "data": [
+        {
+            "time": "2018-05-10 10:00:00",
+            "so2": "40.526"
+        },
+        {
+            "time": "2018-02-10 11:00:00",
+            "so2": "36.15"
+        },
+		...
+        {
+            "time": "2018-05-23 20:00:00",
+            "so2": "52.201"
+        }
+    ]
+}
+```
+
 
 
 # 截图
@@ -126,6 +159,8 @@ api/lastest/yangpusipiao/all
 ![](img/radar.png)
 ## 空气质量排行
 ![](img/rank.png)
+## PM2.5预测
+![](img/forecast.png)
 ## 污染物预警
 ![](img/alarm.png)
 ![](img/email.png)

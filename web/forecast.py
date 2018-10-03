@@ -25,4 +25,3 @@ def forecast_pm25():
         str = ('C:/Users/franc/Desktop/AirNet/libs/forecast_pm25.py '+geopoint+' train'+days)
         status = os.system(str)
         return(json.dumps(status))
-

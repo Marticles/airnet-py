@@ -11,7 +11,6 @@ import datetime
 from sklearn.preprocessing import StandardScaler
 import pymysql
 
-
 def onehot_encoder(df, col):
     temp = pd.get_dummies(df[col], prefix=col)
     df = pd.concat([df, temp], axis=1)

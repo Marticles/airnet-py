@@ -121,6 +121,39 @@ api/lastest/yangpusipiao/all
 }
 ```
 
+## 3. Request Forecast Data
+### 3.1 URL
+```
+api/forecast/site?start=start_time&end=end_time
+```
+
+### 3.2 Example
+#### 3.2.1 Request URL
+```
+api/forecast/jingan?start=2018-05-10 10:00&end=2018-05-23 20:00
+```
+#### 3.2.2 Return Json
+```
+{
+    "request_site": "jingan",
+    "data": [
+        {
+            "time": "2018-05-10 10:00:00",
+            "so2": "40.526"
+        },
+        {
+            "time": "2018-02-10 11:00:00",
+            "so2": "36.15"
+        },
+		...
+        {
+            "time": "2018-05-23 20:00:00",
+            "so2": "52.201"
+        }
+    ]
+}
+```
+
 
 # Screenshots
 ## Home Page
@@ -131,6 +164,8 @@ api/lastest/yangpusipiao/all
 ![](img/radar.png)
 ## Air Quality Rank
 ![](img/rank.png)
+## PM2.5 Forecasting
+![](img/forecast.png)
 ## Air Pollution Alert
 ![](img/alarm.png)
 ![](img/email.png)
