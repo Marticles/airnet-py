@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="row col-md-11 col-md-offset-1">
+        <div class="col-md-11 ">
+            <ol class="breadcrumb">
+                <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"> 主页</span></a></li>
+                <li class="active" id="indextitle">PM2.5预测</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="form-group ">
+
+
+        <div class="col-md-2 col-md-offset-2">
+            <div class="input-group date form_datetime_start  "
+                 data-date-format="yyyy-mm-dd hh:ii " data-link-field="dtp_input1" style="float:left">
+
+                <input class="form-control" data-format="yyyy-mm-dd hh:ii:ss" size="1" type="text"
+                       value="2018-3-25 12:00" readonly>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                <input type="hidden" id="dtp_input1" value=""/>
+            </div>
+        </div>
+
+
+        <div class="col-sm-2">
+            <select class="selectpicker " id="geopicker" title="选择预测监测站(默认上海杨浦)" style="font-color:black">
+                <optgroup label="静安">
+                    <option value="jingan">静安监测站</option>
+                </optgroup>
+                <optgroup label="虹口">
+                    <option value="hongkou">虹口监测站</option>
+                </optgroup>
+                <optgroup label="浦东">
+                    <option value="pudongchuansha">浦东川沙监测站</option>
+                    <option value="pudongxinqu">浦东新区监测站</option>
+                    <option value="pudongzhangjiang">浦东张江监测站</option>
+                </optgroup>
+                <optgroup label="普陀">
+                    <option value="putuo">普陀监测站</option>
+                </optgroup>
+                <optgroup label="黄埔">
+                    <option value="shiwuchang">十五厂(卢湾师专附小)监测站</option>
+                </optgroup>
+                <optgroup label="杨浦">
+                    <option value="yangpusipiao">杨浦四漂监测站</option>
+                </optgroup>
+                <optgroup label="徐汇">
+                    <option value="xuhuishangshida">徐汇上师大监测站</option>
+                </optgroup>
+                <optgroup label="青浦">
+                    <option value="qingpudianshanhu">青浦淀山湖监测站</option>
+                </optgroup>
+
+            </select>
+        </div>
+
+
+        <div class="col-sm-3">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">输入预测时长(天)</span>
+                <input type="text" class="form-control" id="forecast_day" placeholder="如：90"
+                       aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+
+        <div id="request_button ">
+            <button type="submit" class="btn btn-success" data-toggle="modal" data-target="#myModal">生成预测</button>
+        </div>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">是否需要重新训练预测模型？</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>若重新训练预测模型，需要15至20分钟生成新的预测模型，直接使用训练好的模型可在数秒内完成输出预测。建议在新数据较多时才选择重新训练模型。</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="not_train_button">使用原有模型</button>
+                        <button type="button" class="btn btn-primary" id="train_button ">重新训练模型</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <script>
+            $('.form_datetime_start').datetimepicker({
+                language: 'zh-CN',
+                weekStart: 1, //一周从哪一天开始
+                todayBtn: 1, //
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                forceParse: 0,
+            });
+
+
+        </script>
+
+        <script>
+            var theme = 'macarons';
+            var obj = document.getElementById('indextitle');
+            obj.innerText = "PM2.5预测"
+            var ChartItem = function () {
+                return {
+                    name: '',
+                    type: 'line',
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: '最高值'},
+                            {type: 'min', name: '最低值'},
+                            {type: 'average', name: '平均值'}
+                        ]
+                    },
+                    data: []
+                }
+            };
+
+            $(function () {
+                $("#myModal").on('click', "button[id^='not_train_button']", function () {
+
+                    var request_data = {};
+                    request_data['start'] = $('.form_datetime_start').data("datetimepicker").getDate();
+                    request_data['geopoint'] = $('#geopicker').val();
+                    request_data['forecast_day'] = $('#forecast_day').val();
+                    $('#myModal').modal('hide');
+                    $.ajax({
+                        url: '/forecast_pm25',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: JSON.stringify(request_data),
+                        contentType: 'application/json; charset=UTF-8',
+                        success: function (data) {
+                            console.log(data);
+                            myChart.clear();
+                            var newChart = echarts.init(document.getElementById('main_charts'), theme);
+                            var app = {
+                                real_day: [],
+                                forecast_day: [],
+                                lengends: [],
+                                yvalue: [],
+                                xday:[]
+                            }
+                            var chartitem = new ChartItem();
+                            chartitem.name = 'real_pm25';
+                            chartitem.data = data.real_pm25;
+                            app.yvalue.push(chartitem);
+                            app.lengends.push('real_pm25');
+
+                            var fill = new Array(data.real_pm25.length);
+                            for(i=0;i++;i<data.real_pm25.length)
+                                fill[i].append(0);
+
+                            console.log(fill)
+                            data.forecast_pm25 = fill.concat(data.forecast_pm25);
+
+
+                            var chartitem2 = new ChartItem();
+                            chartitem2.name = 'forecast_pm25';
+                            chartitem2.data = data.forecast_pm25;
+                            app.yvalue.push(chartitem2);
+                            app.lengends.push('forecast_pm25');
+
+
+
+                            app.real_day = data.real_time;
+                            app.forecast_day = data.forecast_time;
+                            app.xday = app.real_day.concat(app.forecast_day)
+
+                            newChart.setOption({
+                                title: {
+                                    text: 'PM2.5预测',
+                                    subtext: '鼠标悬停可查看详细信息'
+                                },
+                                tooltip: {trigger: 'axis'},
+                                legend: {
+                                    data: app.lengends
+                                },
+                                toolbox: {
+                                    show: true,
+                                    feature: {
+                                        mark: {show: true},
+                                        dataView: {show: true, readOnly: false},
+                                        restore: {show: true},
+                                        saveAsImage: {show: true}
+                                    }
+                                },
+                                calculable: true,
+                                xAxis: {
+                                    show: true,
+                                    data: app.xday,
+                                },
+                                yAxis: [
+                                    {
+                                        show: true,
+                                        type: 'value',
+                                    }
+                                ],
+                                series: app.yvalue
+                            })
+                        },
+                        error: function (msg) {
+                            console.log(msg);
+                            alert('Error!');
+                        }
+                    })
+                })
+            });
+
+            $(function () {
+                $("#myModal").on('click', "button[id^='train_button']", function () {
+                    alert("后台已开始重新训练模型，请等待15-20分钟后再使用PM2.5预测功能。")
+                    $('#myModal').modal('hide');
+
+
+                 var request_data = {};
+                    request_data['geopoint'] = $('#geopicker').val();
+                    request_data['days'] = $('#forecast_day').val();
+                    $('#myModal').modal('hide');
+                    $.ajax({
+                        url: '/forecast_pm25',
+                        type: 'PUT',
+                        dataType: 'json',
+                        data: JSON.stringify(request_data),
+                        contentType: 'application/json; charset=UTF-8',
+                        success: function (data) {
+                            console.log(data);
+
+                        },
+                        error: function (msg) {
+                            console.log(msg);
+                            alert('Error!');
+                        }
+                    })
+                })
+            });
+        </script>
+
+        <br/>
+
+        <div id="main_charts" style="width: 1000px;height:600px;margin: 0 auto;"></div>
+        <script>
+            var theme = 'macarons';
+
+            var myChart = echarts.init(document.getElementById('main_charts'), theme);
+
+            var app = {
+                xday: [],
+                yvalue: []
+            };
+
+            $(document).ready(function () {
+                getData();
+            });
+
+            function getData() {
+                $.ajax({
+                    url: '/forecast_pm25',
+                    data: {},
+                    type: 'GET',
+                    async: true,
+                    dataType: 'json',
+                    success: function (data) {
+                        app.xday = data.time;
+                        app.yvalue = data.forecast_pm25;
+                        myChart.setOption({
+                            title: {
+                                text: 'PM2.5预测',
+                                subtext: '鼠标悬停可查看详细信息'
+                            },
+                            tooltip: {trigger: 'axis'},
+                            legend: {
+                                data: ['forecast_pm2.5']
+                            },
+                            toolbox: {
+                                show: true,
+                                feature: {
+                                    mark: {show: true},
+                                    dataView: {show: true, readOnly: false},
+                                    magicType: {show: true, type: ['line']},
+                                    restore: {show: true},
+                                    saveAsImage: {show: true}
+                                }
+                            },
+                            calculable: true,
+                            xAxis: {
+                                show: true,
+                                data: app.xday,
+                                name: '日期',
+                            },
+                            yAxis: [
+                                {
+                                    show: true,
+                                    type: 'value',
+
+
+                                }
+                            ],
+                            series: [{
+                                name: 'forecast_pm2.5',
+                                type: 'line',
+                                data: app.yvalue,
+
+                                markPoint: {
+
+                                    data: [
+                                        {type: 'max', name: '最高值'},
+                                        {type: 'min', name: '最低值'},
+                                        {type: 'average', name: '平均值'}
+                                    ],
+
+                                },
+                            }]
+                        })
+                    },
+
+
+                    error: function (msg) {
+                        console.log(msg);
+                        alert('Error!');
+                    }
+                })
+
+            };
+
+
+
+        </script>
+
+        {% endblock %}

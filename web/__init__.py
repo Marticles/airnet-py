@@ -15,3 +15,4 @@ from web import index
 from web import other
 from web import rank
 from web import viz
+from web import forecast

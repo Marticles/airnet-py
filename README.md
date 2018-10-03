@@ -18,7 +18,7 @@ You can use API to get the history data, forecasting data and the lasetest data,
 * [ ] Crawler
 * [x] Visualization
 * [x] Air Quality Rank
-* [ ] PM2.5 Forecasting
+* [x] PM2.5 Forecasting
 * [x] Air Pollution Alert
 * [x] Data Export
 * [x] API

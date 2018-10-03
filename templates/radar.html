@@ -390,6 +390,7 @@
                 contentType: 'application/json; charset=UTF-8',
                 async: true,
                 success: function (data) {
+                    console.log(data)
                     app.days = getJsonLength(data.time);
                     var value = data.pollution.level;
                     var counter_exellent = 0;

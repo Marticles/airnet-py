@@ -28,7 +28,7 @@
             request_data['end'] = $('.form_datetime_end').data("datetimepicker").getDate();
             request_data['pollution'] = $('#polpicker').val();
             request_data['geopoint'] = $('#geopicker').val();
-            // alert(request_data['pollution']);
+
             $.ajax({
                 url: '/vizdata',
                 type: 'POST',
@@ -36,6 +36,7 @@
                 data: JSON.stringify(request_data),  //转为字符串
                 contentType: 'application/json; charset=UTF-8',
                 success: function (data) {
+                    console.log(data);
                     myChart.clear();
                     var newChart = echarts.init(document.getElementById('main_charts'),theme);
                     var app = {

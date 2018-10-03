@@ -18,7 +18,24 @@ def get_air_data(start_time='2018-04-21 01:00:00', end_time='2018-04-25 02:00:00
     sql_default = 'SELECT time, `{0}` FROM `{1}` WHERE time BETWEEN %s AND %s'
     sql = 'SELECT time, pm25,pm10,co,no2,ozone1hour,ozone8hour,so2,aqi,level,primarypollutant FROM `{0}` WHERE time BETWEEN %s AND %s'
 
-    if (pollution != 'pm25'):
+    if (pollution == 'pm25'):
+        cur.execute(sql_default.format(pollution, geopoint), (start_time, end_time))
+        data = cur.fetchall()
+        json_data = {}
+        time = []
+        pollution = []
+
+        for single in data:
+            time.append(single[0])
+            pollution.append(single[1])
+        json_data['time'] = time
+        json_data['pm25'] = pollution
+        air_json = json.dumps(json_data, cls=DateEncoder)
+        cur.close()
+        conn.close()
+        return (air_json)
+
+    else:
         cur.execute(sql.format(geopoint), (start_time, end_time))
         data = cur.fetchall()
         json_data = {}
@@ -58,28 +75,8 @@ def get_air_data(start_time='2018-04-21 01:00:00', end_time='2018-04-25 02:00:00
         pollution['aqi'] = aqi
         pollution['level'] = level
         pollution['primarypollutant'] = primarypollutant
-
         json_data['time'] = time
         json_data['pollution'] = pollution
-        air_json = json.dumps(json_data, cls=DateEncoder)
-
-        cur.close()
-        conn.close()
-
-        return (air_json)
-
-    else:
-        cur.execute(sql_default.format(pollution, geopoint), (start_time, end_time))
-        data = cur.fetchall()
-        json_data = {}
-        time = []
-        pollution = []
-
-        for single in data:
-            time.append(single[0])
-            pollution.append(single[1])
-        json_data['time'] = time
-        json_data['pm25'] = pollution
         air_json = json.dumps(json_data, cls=DateEncoder)
         cur.close()
         conn.close()
@@ -311,6 +308,60 @@ def get_api_lastest(site, pollution):
     cur.close()
     conn.close()
     return json.dumps(json_api_lastest_info, cls=DateEncoder)
+
+def get_forecast_default():
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    # 24hours * 7 days = 168 hours
+    sql = 'select time, forecast_pm25 from  forecast_yangpusipiao order by time asc limit 168 '
+    cur.execute(sql)
+    forecast_default = cur.fetchall()
+    forecast_default_json = {}
+    time = []
+    forecast_pm25 = []
+
+    for single in forecast_default:
+        time.append(single['time'])
+        forecast_pm25.append(single['forecast_pm25'])
+
+    forecast_default_json['time'] = time
+    forecast_default_json['forecast_pm25'] = forecast_pm25
+    cur.close()
+    conn.close()
+    return json.dumps(forecast_default_json, cls=DateEncoder)
+
+def get_forecast_data(start_time,forecast_day,geopoint):
+    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    forecast_day = int(forecast_day)*24
+    sql = 'select time, forecast_pm25 from  forecast_'+geopoint+' order by time asc limit ' + str(forecast_day)
+    cur.execute(sql)
+    forecast_data = cur.fetchall()
+    cur.execute('select time from ' + geopoint + ' order by time desc limit 1')
+    last_date = cur.fetchall()
+    sql = 'select time, pm25 from '+geopoint+' where time between %s and %s'
+    cur.execute(sql,(start_time,last_date[0]['time']))
+    real_data = cur.fetchall()
+    forecast_real_json = {}
+    forecast_time = []
+    forecast_pm25 = []
+    real_time = []
+    real_pm25 = []
+    for single in forecast_data:
+        forecast_time.append(single['time'])
+        forecast_pm25.append(single['forecast_pm25'])
+    for single in real_data:
+        real_time.append(single['time'])
+        real_pm25.append(single['pm25'])
+
+    forecast_real_json['forecast_time'] = forecast_time
+    forecast_real_json['forecast_pm25'] = forecast_pm25
+    forecast_real_json['real_time'] = real_time
+    forecast_real_json['real_pm25'] = real_pm25
+
+    cur.close()
+    conn.close()
+    return json.dumps(forecast_real_json, cls=DateEncoder)
 
 
 def datatime_converter(object):
