@@ -124,7 +124,7 @@ def get_index_data(start_time='2018-03-25 12:00:00', pollution='pm25'):
     return (index_json)
 
 
-def get_index_lastdate():
+def get_index_lastdate(type):
     conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
     cur = conn.cursor()
     sql = 'select time from yangpusipiao order by time desc limit 1'
@@ -135,7 +135,11 @@ def get_index_lastdate():
     json_lastdate = json.dumps(json_lastdate, cls=DateEncoder)
     cur.close()
     conn.close()
-    return (json_lastdate)
+    if type =="time":
+        return (json_lastdate)
+    if type =="site":
+        return list(lastdate)
+
 
 
 def get_rank_now_data():
@@ -210,7 +214,7 @@ def get_export_data(start_time, end_time, geopoint):
     csv_name = 'export/' + geopoint + '-' + start_time.replace(' ', '-').replace(':', '-') + '-' + end_time.replace(' ',
                                                                                                                     '-').replace(
         ':', '-') + '.csv'
-    df.to_csv(csv_name)
+    df.to_csv(csv_name,encoding='utf_8_sig')
     new_csv_name = csv_name.replace('export/', '')
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     insert_sql = 'INSERT INTO export VALUE (' + '\'' + nowtime + '\'' + ',' + '\'' + start_time + '\'' + ',' + '\'' + end_time + '\'' + ',' + '\'' + geopoint + '\'' + ', ' + '\'' + new_csv_name + '\'' + ')'
@@ -275,7 +279,7 @@ def get_api_history(site, pollution, start_time, end_time):
     json_api_history_info['data'] = api_history_info
     cur.close()
     conn.close()
-    return json.dumps(json_api_history_info, cls=DateEncoder)
+    return json.dumps(json_api_history_info, cls=DateEncoder,ensure_ascii=False)
 
 def get_api_forecast(site, start_time, end_time):
     conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
@@ -288,7 +292,7 @@ def get_api_forecast(site, start_time, end_time):
     api_forecast_json['data'] = api_forecast_info
     cur.close()
     conn.close()
-    return json.dumps(api_forecast_json, cls=DateEncoder)
+    return json.dumps(api_forecast_json, cls=DateEncoder,ensure_ascii=False)
 
 def get_api_lastest(site, pollution):
     conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
@@ -304,7 +308,7 @@ def get_api_lastest(site, pollution):
     json_api_lastest_info['data'] = api_lastest_info
     cur.close()
     conn.close()
-    return json.dumps(json_api_lastest_info, cls=DateEncoder)
+    return json.dumps(json_api_lastest_info, cls=DateEncoder,ensure_ascii=False)
 
 def get_forecast_default():
     conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')

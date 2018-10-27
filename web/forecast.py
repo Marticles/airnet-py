@@ -22,6 +22,6 @@ def forecast_pm25():
     elif request.method == 'PUT':
         days = request.get_json()['days']
         geopoint = request.get_json()['geopoint']
-        str = ('C:/Users/franc/Desktop/AirNet/libs/forecast_pm25.py '+geopoint+' train'+days)
+        str = ('/home/AirNet/libs/forecast_pm25.py '+geopoint+' train'+days)
         status = os.system(str)
         return(json.dumps(status))

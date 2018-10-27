@@ -15,7 +15,6 @@ def get_data():
         start_time = format_time(start_time)
         pollution = request.get_json()['pollution']
         geopoint = request.get_json()['geopoint']
-        print(start_time, end_time, pollution, geopoint)
         return get_air_data(start_time, end_time, pollution, geopoint)
 
 @web.route('/viz/line')

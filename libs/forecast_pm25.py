@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import numpy as np
 import pandas as pd
 from tensorflow.contrib import rnn
@@ -10,6 +11,7 @@ import sys
 import datetime
 from sklearn.preprocessing import StandardScaler
 import pymysql
+pymysql.install_as_MySQLdb()
 
 def onehot_encoder(df, col):
     temp = pd.get_dummies(df[col], prefix=col)
@@ -19,15 +21,15 @@ def onehot_encoder(df, col):
 
 
 site = sys.argv[1]
-days = sys.argv[3]
+days = int(sys.argv[3])
 
 conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
 sql = 'select * from ' + site + ' order by time asc'
 
 df = pd.read_sql_query(sql, conn)
 df.fillna(0, inplace=True)
-df = onehot_encoder(df, col='level')
-del df['time'], df['city'], df['site'], df['primarypollutant']
+
+del df['level'], df['time'], df['city'], df['site'], df['primarypollutant']
 print(df.head(5))
 df_train = df.iloc[:(-days * 24), :].copy()
 df_test = df.iloc[-days * 24:, :].copy()

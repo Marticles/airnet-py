@@ -121,7 +121,7 @@ api/lastest/yangpusipiao/all
 }
 ```
 
-## 3. Request Forecast Data
+## 3. Request Forecast Data (Only PM2.5)
 ### 3.1 URL
 ```
 api/forecast/site?start=start_time&end=end_time
@@ -139,16 +139,16 @@ api/forecast/jingan?start=2018-05-10 10:00&end=2018-05-23 20:00
     "data": [
         {
             "time": "2018-05-10 10:00:00",
-            "so2": "40.526"
+            "forecast_pm25": "40.526"
         },
         {
             "time": "2018-02-10 11:00:00",
-            "so2": "36.15"
+            "forecast_pm25": "36.15"
         },
 		...
         {
             "time": "2018-05-23 20:00:00",
-            "so2": "52.201"
+            "forecast_pm25": "52.201"
         }
     ]
 }
