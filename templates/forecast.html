@@ -232,13 +232,12 @@
                         dataType: 'json',
                         data: JSON.stringify(request_data),
                         contentType: 'application/json; charset=UTF-8',
-                        success: function (data) {
-                            console.log(data);
+                        success: function () {
+                            
 
                         },
                         error: function (msg) {
                             console.log(msg);
-                            alert('Error!');
                         }
                     })
                 })

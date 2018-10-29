@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_apscheduler import APScheduler
 from web.cache import cache
-# from libs.email import send_email
+from libs.email import send_email
 import config
 
 
@@ -32,7 +32,8 @@ scheduler = APScheduler();
 scheduler.init_app(app=app)
 scheduler.start()
 
-# scheduler.add_job(func=send_email, id='send_email', args=(), trigger='interval', seconds=config.SCHEDULER_TIME, replace_existing=True)
+scheduler.add_job(func=send_email,max_instances=10, id='send_email', args=(), trigger='interval', seconds=config.SCHEDULER_TIME,
+                  replace_existing=True)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True, port=5000, threaded=True)
