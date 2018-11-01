@@ -1,15 +1,21 @@
 import datetime
 import json
-
 import pandas as pd
 import pymysql
-
 from libs.data_to_json import DateEncoder
+from web import secure
+
+host = secure.DB_HOST
+port = secure.DB_PORT
+user = secure.DB_USERNAME
+password = secure.DB_PASSWORD
+db = secure.DB_NAME
+charset = secure.DB_CHARSET
 
 
 def get_air_data(start_time='2018-04-21 01:00:00', end_time='2018-04-25 02:00:00', pollution='pm25',
                  geopoint='yangpusipiao'):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor()
 
     if (isinstance(start_time, str) and isinstance(end_time, str)):
@@ -84,7 +90,7 @@ def get_air_data(start_time='2018-04-21 01:00:00', end_time='2018-04-25 02:00:00
 
 
 def get_index_data(start_time='2018-03-25 12:00:00', pollution='pm25'):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor()
     if (isinstance(start_time, str)):
         start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
@@ -125,7 +131,7 @@ def get_index_data(start_time='2018-03-25 12:00:00', pollution='pm25'):
 
 
 def get_index_lastdate(type):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor()
     sql = 'select time from yangpusipiao order by time desc limit 1'
     cur.execute(sql)
@@ -143,7 +149,7 @@ def get_index_lastdate(type):
 
 
 def get_rank_now_data():
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     sql = '(select * from hongkou order by time desc limit 1 )' \
           'union all (select * from jingan order by time desc limit 1 )' \
@@ -174,7 +180,7 @@ def get_rank_now_data():
 
 
 def get_rank_history_data(start_time, order):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     order_sql = 'aqi'
     if order == 'order':
@@ -205,7 +211,7 @@ def get_rank_history_data(start_time, order):
 
 
 def get_export_data(start_time, end_time, geopoint):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     start_time = start_time.strftime("%Y-%m-%d %H:%M:%S")
     end_time = end_time.strftime("%Y-%m-%d %H:%M:%S")
     nowtime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -227,7 +233,7 @@ def get_export_data(start_time, end_time, geopoint):
 
 
 def get_downloadinfo():
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     sql = 'select * from export order by time desc;'
     cur.execute(sql)
@@ -239,7 +245,7 @@ def get_downloadinfo():
 
 
 def get_alarminfo(jsonify):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     sql = 'select * from alarm order by time desc;'
     cur.execute(sql)
@@ -254,7 +260,7 @@ def get_alarminfo(jsonify):
 
 
 def check_alarm(site, pollution, value):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor()
     sql = 'select time,' + pollution + ' from ' + site + ' order by time desc limit 1;'
     cur.execute(sql)
@@ -266,7 +272,7 @@ def check_alarm(site, pollution, value):
 
 
 def get_api_history(site, pollution, start_time, end_time):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     if (pollution == 'all'):
         sql = 'select * from ' + site + ' where time between ' + '\'' + start_time + '\'' + ' and ' + '\'' + end_time + '\''
@@ -282,7 +288,7 @@ def get_api_history(site, pollution, start_time, end_time):
     return json.dumps(json_api_history_info, cls=DateEncoder,ensure_ascii=False)
 
 def get_api_forecast(site, start_time, end_time):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     sql = 'select time, forecast_pm25 from ' +'forecast_'+site + ' where time between ' + '\'' + start_time + '\'' + ' and ' + '\'' + end_time + '\''
     cur.execute(sql)
@@ -295,7 +301,7 @@ def get_api_forecast(site, start_time, end_time):
     return json.dumps(api_forecast_json, cls=DateEncoder,ensure_ascii=False)
 
 def get_api_lastest(site, pollution):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     if (pollution == 'all'):
         sql = 'select * from ' + site + ' order by time desc limit 1'
@@ -311,7 +317,7 @@ def get_api_lastest(site, pollution):
     return json.dumps(json_api_lastest_info, cls=DateEncoder,ensure_ascii=False)
 
 def get_forecast_default():
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     # 24hours * 7 days = 168 hours
     sql = 'select time, forecast_pm25 from  forecast_yangpusipiao order by time asc limit 168 '
@@ -332,7 +338,7 @@ def get_forecast_default():
     return json.dumps(forecast_default_json, cls=DateEncoder)
 
 def get_forecast_data(start_time,forecast_day,geopoint):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+    conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
     cur = conn.cursor(cursor=pymysql.cursors.DictCursor)
     forecast_day = int(forecast_day)*24
     sql = 'select time, forecast_pm25 from  forecast_'+geopoint+' order by time asc limit ' + str(forecast_day)

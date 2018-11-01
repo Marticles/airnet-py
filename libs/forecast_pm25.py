@@ -13,6 +13,15 @@ from sklearn.preprocessing import StandardScaler
 import pymysql
 pymysql.install_as_MySQLdb()
 
+from web import secure
+
+host = secure.DB_HOST
+port = secure.DB_PORT
+user = secure.DB_USERNAME
+password = secure.DB_PASSWORD
+db = secure.DB_NAME
+charset = secure.DB_CHARSET
+
 def onehot_encoder(df, col):
     temp = pd.get_dummies(df[col], prefix=col)
     df = pd.concat([df, temp], axis=1)
@@ -23,7 +32,7 @@ def onehot_encoder(df, col):
 site = sys.argv[1]
 days = int(sys.argv[3])
 
-conn = pymysql.connect(host='localhost', port=3306, user='root', password='root', db='airnet', charset='utf8')
+conn = pymysql.connect(host=host, port=port, user=user, password=password, db=db, charset=charset)
 sql = 'select * from ' + site + ' order by time asc'
 
 df = pd.read_sql_query(sql, conn)
