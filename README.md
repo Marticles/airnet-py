@@ -1,7 +1,7 @@
 # AirNet
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 ![](https://img.shields.io/badge/language-Python-orange.svg)
-[![中文 README](https://img.shields.io/badge/Readme-中文-red.svg)](https://github.com/Marticles/AirNet/blob/master/README_zh.md)
+[![中文 README](https://img.shields.io/badge/Readme-中文-red.svg)](https://github.com/Marticles/airnet-py/blob/master/README_zh.md)
 ![Image](img/logo.png)
 # What is AirNet?
 
